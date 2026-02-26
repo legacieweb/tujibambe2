@@ -40,7 +40,7 @@ const Home = () => {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:5000/api/tours');
+        const res = await axios.get('https://tujibambe2.onrender.com/api/tours');
         console.log('Fetched tours:', res.data); // Debug log
         console.log('Safari Rally Tour:', res.data.find(t => t.title.includes('Safari Rally'))); // Specific debug
         setFeaturedTours(res.data);
