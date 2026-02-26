@@ -20,7 +20,7 @@ const UserDashboard = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://127.0.0.1:5000/api/bookings/my-bookings', {
+        const res = await axios.get('https://tujibambe2.onrender.com/api/bookings/my-bookings', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(res.data);

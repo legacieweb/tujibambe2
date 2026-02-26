@@ -24,10 +24,10 @@ const AdminDashboard = () => {
       try {
         const token = localStorage.getItem('token');
         const [bookingsRes, toursRes] = await Promise.all([
-          axios.get('http://127.0.0.1:5000/api/bookings/all', {
+          axios.get('https://tujibambe2.onrender.com/api/bookings/all', {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('http://127.0.0.1:5000/api/tours')
+          axios.get('https://tujibambe2.onrender.com/api/tours')
         ]);
         setBookings(bookingsRes.data);
         setTours(toursRes.data);

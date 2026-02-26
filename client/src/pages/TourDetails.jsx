@@ -33,7 +33,7 @@ const TourDetails = () => {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:5000/api/tours/${id}`);
+        const res = await axios.get(`https://tujibambe2.onrender.com/api/tours/${id}`);
         setTour(res.data);
         setLoading(false);
       } catch (err) {

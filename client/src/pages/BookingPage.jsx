@@ -70,8 +70,8 @@ const BookingPage = () => {
         const inviteCode = queryParams.get('invite');
 
         const [tourRes, vehiclesRes] = await Promise.all([
-          axios.get(`http://127.0.0.1:5000/api/tours/${id}`),
-          axios.get('http://127.0.0.1:5000/api/vehicles')
+          axios.get(`https://tujibambe2.onrender.com/api/tours/${id}`),
+          axios.get('https://tujibambe2.onrender.com/api/vehicles')
         ]);
         
         setTour(tourRes.data);
@@ -79,7 +79,7 @@ const BookingPage = () => {
         
         if (inviteCode) {
           try {
-            const inviteRes = await axios.get(`http://127.0.0.1:5000/api/bookings/invite/${inviteCode}`);
+            const inviteRes = await axios.get(`https://tujibambe2.onrender.com/api/bookings/invite/${inviteCode}`);
             setInviteTrip(inviteRes.data.trip);
             setSelectedVehicle(inviteRes.data.trip.vehicle);
             setBookedSeats(inviteRes.data.bookedSeats);
@@ -108,7 +108,7 @@ const BookingPage = () => {
     const fetchBookedSeats = async () => {
       if (date && tour && !inviteTrip) {
         try {
-          const res = await axios.get(`http://127.0.0.1:5000/api/bookings/booked-seats/${id}/${date}`);
+          const res = await axios.get(`https://tujibambe2.onrender.com/api/bookings/booked-seats/${id}/${date}`);
           setBookedSeats(res.data);
           setSelectedSeats(prev => prev.filter(s => !res.data.includes(s)));
         } catch (err) {
@@ -190,7 +190,7 @@ const BookingPage = () => {
       const token = localStorage.getItem('token');
       const totalPriceUSD = calculateTotal(); // Original USD price
 
-      await axios.post('http://127.0.0.1:5000/api/bookings', {
+      await axios.post('https://tujibambe2.onrender.com/api/bookings', {
         tour: id,
         bookingDate: date,
         numberOfPeople: people,

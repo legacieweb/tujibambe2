@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const signup = async (userData) => {
-        const res = await axios.post('http://127.0.0.1:5000/api/auth/signup', userData);
+        const res = await axios.post('https://tujibambe2.onrender.com/api/auth/signup', userData);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         setUser(res.data.user);
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = async (userData) => {
-        const res = await axios.post('http://127.0.0.1:5000/api/auth/login', userData);
+        const res = await axios.post('https://tujibambe2.onrender.com/api/auth/login', userData);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         setUser(res.data.user);

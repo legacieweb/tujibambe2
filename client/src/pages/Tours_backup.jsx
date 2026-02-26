@@ -16,7 +16,7 @@ const Tours = () => {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:5000/api/tours');
+        const res = await axios.get('https://tujibambe2.onrender.com/api/tours');
         setTours(res.data);
         setFilteredTours(res.data);
         setLoading(false);
