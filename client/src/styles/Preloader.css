@@ -1,0 +1,174 @@
+.preloader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  overflow: hidden;
+}
+
+.preloader-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.1);
+}
+
+.preloader-content {
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.logo-animation {
+  margin-bottom: 40px;
+  animation: slideInDown 1s ease-out both;
+}
+
+.logo-text {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 5px;
+  margin: 0;
+}
+
+.logo-text span {
+  color: var(--primary);
+}
+
+.logo-underline {
+  height: 4px;
+  background: var(--primary);
+  width: 0;
+  margin: 10px auto;
+  animation: growWidth 1s ease-out 0.5s both;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.modern-loader {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.inner-ring {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 3px solid transparent;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: rotate 1.5s linear infinite;
+}
+
+.outer-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 3px solid transparent;
+  border-bottom-color: white;
+  border-radius: 50%;
+  animation: rotate 2s linear infinite reverse;
+}
+
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px var(--primary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-text {
+  color: #888;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: fadeInUp 1s ease-out 1s both, blink 2s infinite;
+}
+
+.preloader-bg-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.bg-circle.one {
+  top: -10%;
+  right: -10%;
+  width: 40vw;
+  height: 40vw;
+  background: var(--primary);
+  animation: float 10s infinite alternate;
+}
+
+.bg-circle.two {
+  bottom: -10%;
+  left: -10%;
+  width: 30vw;
+  height: 30vw;
+  background: white;
+  animation: float 8s infinite alternate-reverse;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes growWidth {
+  from { width: 0; }
+  to { width: 150px; }
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  from { transform: translate(0, 0); }
+  to { transform: translate(30px, 30px); }
+}

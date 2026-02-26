@@ -1,0 +1,150 @@
+/* Currency Selector Styles */
+.currency-selector {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.currency-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.currency-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Minimalist Currency Popup */
+.currency-minimal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.currency-minimal-card {
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 400px;
+  border-radius: 24px;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.minimal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+}
+
+.minimal-header {
+  margin-bottom: 30px;
+}
+
+.minimal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.minimal-header p {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.minimal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.minimal-option {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.minimal-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.minimal-option.active {
+  border-color: var(--primary);
+  background: rgba(255, 77, 0, 0.05);
+}
+
+.minimal-flag {
+  font-size: 1.8rem;
+}
+
+.minimal-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.minimal-code {
+  font-weight: 700;
+  color: white;
+}
+
+.minimal-name {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.minimal-check {
+  color: var(--primary);
+}
+
+.minimal-confirm-btn {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.minimal-confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 77, 0, 0.3);
+}
+
+@media (max-width: 450px) {
+  .currency-minimal-card {
+    width: 90%;
+    padding: 24px;
+  }
+}

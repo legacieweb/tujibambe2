@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+
+// Ensure models are registered for population
+require('./Tour');
+require('./User');
+
+const bookingSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    tour: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
+    trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }, // Link to a coordinator trip if any
+    bookingDate: { type: Date, required: true },
+    numberOfPeople: { type: Number, required: true },
+    selectedSeats: [{ type: Number }],
+    totalPrice: { type: Number, required: true },
+    currency: { type: String, default: 'USD' },
+    isCoordinator: { type: Boolean, default: false },
+    status: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' },
+    paymentReference: { type: String },
+    paymentStatus: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
+    createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Booking', bookingSchema);
