@@ -42,15 +42,33 @@ const Tours = () => {
     const fetchTours = async () => {
       try {
         const response = await axios.get('https://tujibambe2.onrender.com/api/tours');
-        setTours(response.data);
-        setFilteredTours(response.data);
+        
+        // Map high-quality images for specific tours to ensure they show correctly
+        const updatedTours = response.data.map(tour => {
+          if (tour.title.toLowerCase().includes('maasai mara')) {
+            return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
+          }
+          if (tour.title.toLowerCase().includes('amboseli')) {
+            return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
+          }
+          if (tour.title.toLowerCase().includes('mount kenya')) {
+            return { ...tour, image: "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995" };
+          }
+          if (tour.title.toLowerCase().includes('safari rally')) {
+            return { ...tour, image: "https://image.api.sportal365.com/process/smp-images-production/pulselive.co.ke/22082024/e9bbcf6d-d167-4b86-b649-1743f9967943" };
+          }
+          return tour;
+        });
+
+        setTours(updatedTours);
+        setFilteredTours(updatedTours);
 
         // Calculate hero stats
-        const destinations = new Set(response.data.map(tour => tour.location)).size;
-        const reviews = response.data.reduce((sum, tour) => sum + (tour.reviews || 0), 0);
+        const destinations = new Set(updatedTours.map(tour => tour.location)).size;
+        const reviews = updatedTours.reduce((sum, tour) => sum + (tour.reviews || 0), 0);
 
         setHeroStats({
-          totalTours: response.data.length,
+          totalTours: updatedTours.length,
           totalDestinations: destinations,
           totalReviews: reviews
         });
@@ -148,6 +166,23 @@ const Tours = () => {
         <div className="hero-content">
           <h1 className="hero-title">Explore Our Tours</h1>
           <p className="hero-subtitle">Discover the magic of Kenya through our hand-picked adventure experiences.</p>
+          
+          <div className="hero-stats-container">
+            <div className="stat-item">
+              <span className="stat-value">{heroStats.totalTours}</span>
+              <span className="stat-label">Adventures</span>
+            </div>
+            <div className="stat-divider"></div>
+            <div className="stat-item">
+              <span className="stat-value">{heroStats.totalDestinations}</span>
+              <span className="stat-label">Destinations</span>
+            </div>
+            <div className="stat-divider"></div>
+            <div className="stat-item">
+              <span className="stat-value">{heroStats.totalReviews}+</span>
+              <span className="stat-label">Happy Travelers</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -184,16 +219,18 @@ const Tours = () => {
             <div className="advanced-filters">
               <div className="filter-group">
                 <label>Category</label>
-                <div className="category-filters">
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </button>
-                  ))}
+                <div className="category-filters-wrapper">
+                  <div className="category-filters">
+                    {categories.map(category => (
+                      <button
+                        key={category}
+                        className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 

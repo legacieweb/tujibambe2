@@ -31,10 +31,27 @@ const TourDetails = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchTour = async () => {
       try {
         const res = await axios.get(`https://tujibambe2.onrender.com/api/tours/${id}`);
-        setTour(res.data);
+        let tourData = res.data;
+
+        // Apply high-quality image mapping
+        if (tourData.title.toLowerCase().includes('maasai mara')) {
+          tourData.image = "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg";
+        } else if (tourData.title.toLowerCase().includes('amboseli')) {
+          tourData.image = "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg";
+        } else if (tourData.title.toLowerCase().includes('mount kenya')) {
+          tourData.image = "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995";
+        } else if (tourData.title.toLowerCase().includes('safari rally')) {
+          tourData.image = "https://image.api.sportal365.com/process/smp-images-production/pulselive.co.ke/22082024/e9bbcf6d-d167-4b86-b649-1743f9967943";
+        }
+
+        setTour(tourData);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -92,6 +109,7 @@ const TourDetails = () => {
           <div className="tour-header-floating">
             <div className="tour-badges">
               <span className="badge-category">{tour.category}</span>
+              {tour.isAllInclusive && <span className="badge-all-inclusive">All-Inclusive</span>}
               <span className="badge-rating"><Star size={14} fill="currentColor" /> 4.9 (120 Reviews)</span>
             </div>
             <h1>{tour.title}</h1>
@@ -130,42 +148,67 @@ const TourDetails = () => {
             <div className="card-body">
               <p className="tour-description-text">{tour.description}</p>
               
-              <div className="experience-highlights">
-                <div className="highlight-item">
-                  <CheckCircle size={18} />
-                  <span>Professional Guide</span>
+              <div className="experience-highlights-grid">
+                <div className="highlights-column">
+                  <h3>What's Included</h3>
+                  <div className="experience-highlights">
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Professional Certified Guide</span>
+                    </div>
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Comfortable 4x4 Transport</span>
+                    </div>
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Lunch & Bottled Water</span>
+                    </div>
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>All Park Entry Fees</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="highlight-item">
-                  <CheckCircle size={18} />
-                  <span>Transport Included</span>
-                </div>
-                <div className="highlight-item">
-                  <CheckCircle size={18} />
-                  <span>Lunch & Refreshments</span>
-                </div>
-                <div className="highlight-item">
-                  <CheckCircle size={18} />
-                  <span>Park Entry Fees</span>
+
+                <div className="highlights-column">
+                  <h3>What's Not Included</h3>
+                  <div className="experience-highlights exclusion">
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Personal Insurance</span>
+                    </div>
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Optional Activities & Gratuities</span>
+                    </div>
+                    <div className="highlight-item">
+                      <CheckCircle size={18} />
+                      <span>Alcoholic Beverages</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="content-card video-card">
-            <div className="card-header">
-              <h2><Play size={24} /> Experience Highlights</h2>
-            </div>
-            <div className="card-body">
-              <div className="video-container-modern">
-                <video 
-                  src={safariRallyVideo} 
-                  controls 
-                  className="experience-video"
-                  poster={tour.image}
-                ></video>
+          {(tour.title.toLowerCase().includes('safari rally') || tour.video) && (
+            <div className="content-card video-card">
+              <div className="card-header">
+                <h2><Play size={24} /> Experience Highlights</h2>
+              </div>
+              <div className="card-body">
+                <div className="video-container-modern">
+                  <video 
+                    src={tour.title.toLowerCase().includes('safari rally') ? safariRallyVideo : tour.video} 
+                    controls 
+                    className="experience-video"
+                    poster={tour.image}
+                  ></video>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="tour-sidebar-booking">

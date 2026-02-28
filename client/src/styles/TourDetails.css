@@ -118,6 +118,18 @@
   margin-right: 1rem;
 }
 
+.badge-all-inclusive {
+  background: #2ecc71;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-right: 1rem;
+}
+
 .badge-rating {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -259,23 +271,89 @@
   margin-bottom: 40px;
 }
 
-.experience-highlights {
+.experience-highlights-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.highlights-column h3 {
+  font-size: 1.2rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.experience-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.experience-highlights.exclusion .highlight-item svg {
+  color: #ff4d4d;
 }
 
 .highlight-item {
   display: flex;
   align-items: center;
   gap: 15px;
-  color: white;
-  font-weight: 600;
-  font-size: 1.1rem;
+  color: #ddd;
+  font-weight: 500;
+  font-size: 1rem;
 }
 
 .highlight-item svg {
   color: var(--primary);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .tour-details-grid-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+  
+  .booking-sticky-card {
+    position: relative;
+    top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-slider-section {
+    height: 50vh;
+  }
+  
+  .tour-header-floating h1 {
+    font-size: 2.5rem;
+  }
+  
+  .tour-quick-meta {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .experience-highlights-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .content-card {
+    padding: 25px;
+  }
+  
+  .thumbnail-strip {
+    bottom: -20px;
+  }
+  
+  .thumb-box {
+    flex: 0 0 80px;
+    height: 60px;
+  }
 }
 
 .video-container-modern {

@@ -42,8 +42,19 @@ const Home = () => {
       try {
         const res = await axios.get('https://tujibambe2.onrender.com/api/tours');
         console.log('Fetched tours:', res.data); // Debug log
-        console.log('Safari Rally Tour:', res.data.find(t => t.title.includes('Safari Rally'))); // Specific debug
-        setFeaturedTours(res.data);
+        
+        // Update images in frontend to ensure they show correctly even if DB hasn't synced
+        const updatedTours = res.data.map(tour => {
+          if (tour.title.toLowerCase().includes('maasai mara')) {
+            return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
+          }
+          if (tour.title.toLowerCase().includes('amboseli')) {
+            return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
+          }
+          return tour;
+        });
+
+        setFeaturedTours(updatedTours);
       } catch (err) {
         console.error("Error fetching tours:", err);
       }
@@ -59,6 +70,7 @@ const Home = () => {
   const safariTour = getTourByTitle("Maasai Mara Safari");
   const beachTour = getTourByTitle("Diani Beach Relaxation");
   const safariRallyTour = getTourByTitle("Safari Rally Kenya");
+  const amboseliTour = getTourByTitle("Amboseli National Park Safari");
 
   // Define carousel slides with direct tour IDs
   const carouselSlides = [
@@ -77,10 +89,19 @@ const Home = () => {
       title: "Maasai Mara Safari",
       subtitle: "Witness the Great Migration",
       description: "Experience the world's most famous wildlife reserve and the Big Five",
-      image: "https://s1.it.atcdn.net/wp-content/uploads/2020/04/HEROMaasaiMara.jpg",
+      image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg",
       buttonText: "Explore",
       buttonLink: safariTour ? `/tours/${safariTour._id}` : "/tours", // Direct Maasai Mara ID
       tourTitle: "Maasai Mara Safari"
+    },
+    {
+      title: "Amboseli National Park Safari",
+      subtitle: "Elephant Paradise",
+      description: "Witness massive elephant herds against the backdrop of Mt. Kilimanjaro",
+      image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
+      buttonText: "View Park",
+      buttonLink: amboseliTour ? `/tours/${amboseliTour._id}` : "/tours",
+      tourTitle: "Amboseli National Park Safari"
     },
     {
       title: "Mount Kenya Expedition",
@@ -90,25 +111,38 @@ const Home = () => {
       buttonText: "Start Climb",
       buttonLink: hikingTour ? `/tours/${hikingTour._id}` : "/tours", // Direct Mount Kenya ID
       tourTitle: "Mount Kenya Expedition"
-    },
-    {
-      title: "Diani Beach Relaxation",
-      subtitle: "Tropical Paradise",
-      description: "Unwind on pristine white sands and crystal clear waters",
-      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-      buttonText: "Relax Now",
-      buttonLink: beachTour ? `/tours/${beachTour._id}` : "/tours", // Direct Diani Beach ID
-      tourTitle: "Diani Beach Relaxation"
     }
   ];
 
-  // Auto-advance carousel (disabled to prevent interference with button clicks)
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-  //   }, 8000);
-  //   return () => clearInterval(interval);
-  // }, [carouselSlides.length]);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) nextSlide();
+    if (isRightSwipe) prevSlide();
+  };
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [currentSlide]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
@@ -126,7 +160,12 @@ const Home = () => {
     <div className="home">
       {/* Hero Carousel Section */}
       <section className="hero-carousel">
-        <div className="carousel-container">
+        <div 
+          className="carousel-container"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           {/* Slides */}
           {carouselSlides.map((slide, index) => (
             <div
@@ -136,7 +175,7 @@ const Home = () => {
               <div 
                 className="carousel-bg"
                 style={{ 
-                  backgroundImage: !slide.video ? `url(${slide.image})` : 'none',
+                  backgroundImage: `url(${slide.image})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat'
@@ -383,7 +422,7 @@ const Home = () => {
             </div>
           </div>
           <div className="activity-card">
-            <div className="activity-img" style={{backgroundImage: "url('https://media.gadventures.com/media-server/cache/c8/19/c819eb72987d45a2df1676e9ac961f51.jpg')"}}></div>
+            <div className="activity-img" style={{backgroundImage: "url('https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg')"}}></div>
             <div className="activity-overlay">
               <Wind size={40} />
               <h3>Wilderness Safaris</h3>
@@ -401,7 +440,7 @@ const Home = () => {
             </div>
           </div>
           <div className="activity-card">
-            <div className="activity-img" style={{backgroundImage: "url('https://images.unsplash.com/photo-1544198365-f5d60b6d8190?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"}}></div>
+            <div className="activity-img" style={{backgroundImage: "url('https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg')"}}></div>
             <div className="activity-overlay">
               <Camera size={40} />
               <h3>Balloon Flights</h3>
@@ -439,13 +478,13 @@ const Home = () => {
           </div>
           <div className="gallery-item">
             <div className="image-frame">
-              <img src="https://images.unsplash.com/photo-1532009241460-7a0862083652?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Amboseli" />
+              <img src="https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" alt="Amboseli" />
             </div>
             <div className="gallery-caption">Amboseli Giants</div>
           </div>
           <div className="gallery-item">
             <div className="image-frame">
-              <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mara Sunset" />
+              <img src="https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" alt="Mara Sunset" />
             </div>
             <div className="gallery-caption">Maasai Mara Sunset</div>
           </div>

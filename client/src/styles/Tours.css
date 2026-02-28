@@ -61,8 +61,65 @@
   font-size: clamp(1rem, 2vw, 1.4rem);
   color: rgba(255, 255, 255, 0.9);
   max-width: 700px;
-  margin: 0 auto;
+  margin: 0 auto 3rem;
   animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-stats-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  padding: 20px 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: fit-content;
+  margin: 0 auto;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 5px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .hero-stats-container {
+    gap: 15px;
+    padding: 15px 25px;
+  }
+  
+  .stat-value {
+    font-size: 1.4rem;
+  }
+  
+  .stat-label {
+    font-size: 0.7rem;
+  }
 }
 
 /* Tours Container */
@@ -194,10 +251,29 @@
   letter-spacing: 1px;
 }
 
+.category-filters-wrapper {
+  overflow-x: auto;
+  padding-bottom: 5px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE/Edge */
+}
+
+.category-filters-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
 .category-filters {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Change from wrap to nowrap for sliding */
+  min-width: max-content;
+}
+
+@media (min-width: 1024px) {
+  .category-filters {
+    flex-wrap: wrap;
+    min-width: auto;
+  }
 }
 
 .filter-btn {
@@ -602,11 +678,30 @@
   font-size: 1rem;
   transition: var(--transition);
   cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  padding: 5px 0;
+}
+
+.view-details::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: var(--transition);
 }
 
 .tour-card:hover .view-details {
   gap: 15px;
   color: white;
+}
+
+.tour-card:hover .view-details::after {
+  width: 100%;
+  background: white;
 }
 
 /* No Results */

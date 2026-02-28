@@ -56,13 +56,13 @@ const tours = [
         description: "Witness the Great Migration and the Big Five in the world's most famous wildlife reserve.",
         location: "Maasai Mara",
         price: 500,
-        image: "https://www.perfectsafarisafrica.com/wp-content/uploads/2021/03/cruiser-game-6-820x500.jpg",
+        image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg",
         duration: "3 Days",
         category: "Safari",
         maxGroupSize: 8,
         type: "group",
         gallery: [
-            "https://images.unsplash.com/photo-1516422317953-2f841304d0af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg",
             "https://images.unsplash.com/photo-1534177714502-0ee436d3d179?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1511497584788-876760111969?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         ]
@@ -90,13 +90,13 @@ const tours = [
         description: "Experience elephants against the backdrop of Mount Kilimanjaro in this iconic park.",
         location: "Amboseli",
         price: 450,
-        image: "https://images.unsplash.com/photo-1567084531540-4c6f7a0f7e3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
         duration: "2 Days",
         category: "Safari",
         maxGroupSize: 10,
         type: "group",
         gallery: [
-            "https://images.unsplash.com/photo-1567084531540-4c6f7a0f7e3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
             "https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1518115684291-7f9999086050?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
         ]

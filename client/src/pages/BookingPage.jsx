@@ -3,7 +3,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
-import Preloader from '../components/Preloader';
 import { 
   Calendar, 
   Users, 
@@ -154,17 +153,7 @@ const BookingPage = () => {
     }
 
     if (window.IyonicPay) {
-      // Use production IyonicPay directly
-      // We manually construct the production URL to bypass the SDK's localhost redirect
-      const baseUrl = 'https://pay.iyonicorp.com';
       const amount = parseFloat(convertedTotal.toFixed(2));
-      const desc = encodeURIComponent(`Booking for ${tour.title} - ${people} travelers`);
-      const url = `${baseUrl}/request?user=tujibambe&embed=true&amount=${amount}&desc=${desc}&currency=${currency}`;
-      
-      // We use the SDK's own modal logic but with our forced production URL
-      // If the SDK doesn't expose a way to set the URL, we'll use its pay method 
-      // but the user said "iyonicpay has everything", implying we should trust their hosted service.
-      
       window.IyonicPay.pay({
         username: 'tujibambe',
         amount: amount,
@@ -188,14 +177,14 @@ const BookingPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const totalPriceUSD = calculateTotal(); // Original USD price
+      const totalPriceUSD = calculateTotal(); 
 
       await axios.post('https://tujibambe2.onrender.com/api/bookings', {
         tour: id,
         bookingDate: date,
         numberOfPeople: people,
         totalPrice: totalPriceUSD,
-        currency: 'USD', // Always store in USD for consistency
+        currency: 'USD',
         selectedSeats,
         isCoordinator,
         vehicleId: selectedVehicle?._id,
@@ -227,48 +216,75 @@ const BookingPage = () => {
         <div className="booking-main-panel">
           {bookingStep === 1 && (
             <div className="step-container fade-in">
-              <h2>Trip Configuration</h2>
-              <div className="booking-form">
-                <div className="form-group">
+              <div className="step-header">
+                <h2>Trip Configuration</h2>
+                <p className="step-subtitle">Customize your travel details to get started.</p>
+              </div>
+              
+              <div className="booking-form-grid">
+                <div className="form-group card-style">
                   <label><Calendar size={18} /> Travel Date</label>
-                  <input 
-                    type="date" 
-                    value={date} 
-                    onChange={(e) => setDate(e.target.value)} 
-                    disabled={tour.type === 'timed'}
-                    className="booking-input"
-                  />
+                  <div className="input-wrapper">
+                    <input 
+                      type="date" 
+                      value={date} 
+                      onChange={(e) => setDate(e.target.value)} 
+                      disabled={tour.type === 'timed'} 
+                      className="booking-input"
+                    />
+                    {tour.type === 'timed' && <AlertCircle size={16} className="fixed-date-icon" />}
+                  </div>
                   {tour.type === 'timed' && <p className="input-hint">This is a fixed-date event.</p>}
                 </div>
                 
-                <div className="form-group">
+                <div className="form-group card-style">
                   <label><Users size={18} /> Number of Travelers</label>
-                  <div className="people-selector">
-                    <button onClick={() => setPeople(Math.max(1, people - 1))}>-</button>
-                    <span>{people}</span>
-                    <button onClick={() => setPeople(people + 1)}>+</button>
+                  <div className="people-selector-modern">
+                    <button 
+                      className="count-btn" 
+                      onClick={() => setPeople(Math.max(1, people - 1))}
+                      aria-label="Decrease"
+                    >-</button>
+                    <div className="count-display">
+                      <span className="count-value">{people}</span>
+                      <span className="count-label">{people === 1 ? 'Traveler' : 'Travelers'}</span>
+                    </div>
+                    <button 
+                      className="count-btn" 
+                      onClick={() => setPeople(people + 1)}
+                      aria-label="Increase"
+                    >+</button>
                   </div>
                 </div>
+              </div>
 
-                {tour.type === 'group' && (
-                  <div className="coordinator-card">
-                    <div className="coordinator-info">
-                      <h3>Are you the coordinator?</h3>
-                      <p>Becoming a coordinator allows you to manage a group trip and invite others.</p>
+              {tour.type === 'group' && (
+                <div className="coordinator-selection-card">
+                  <div className="coordinator-visual">
+                    <div className="icon-circle">
+                      <ShieldCheck size={28} />
                     </div>
-                    <label className="switch">
+                  </div>
+                  <div className="coordinator-text">
+                    <h3>Trip Coordinator</h3>
+                    <p>Be the leader! Manage the group and invite others to join your vehicle.</p>
+                  </div>
+                  <div className="coordinator-toggle">
+                    <label className="modern-switch">
                       <input 
                         type="checkbox" 
                         checked={isCoordinator} 
                         onChange={(e) => setIsCoordinator(e.target.checked)} 
                       />
-                      <span className="slider round"></span>
+                      <span className="switch-slider"></span>
                     </label>
                   </div>
-                )}
+                </div>
+              )}
 
+              <div className="step-footer">
                 <button className="next-step-btn" onClick={() => setBookingStep(2)}>
-                  Continue to Vehicle Selection <ChevronRight size={20} />
+                  Select Your Vehicle <ChevronRight size={20} />
                 </button>
               </div>
             </div>
@@ -277,65 +293,81 @@ const BookingPage = () => {
           {bookingStep === 2 && (
             <div className="step-container fade-in">
               <div className="step-header-with-badge">
-                <h2>Vehicle & Seat Selection</h2>
+                <div className="step-title-area">
+                  <h2>Vehicle & Seats</h2>
+                  <p className="step-subtitle">Choose your preferred transport and select your seats.</p>
+                </div>
                 {inviteTrip && <span className="invite-badge">Group Trip Vehicle Locked</span>}
               </div>
               
-              <div className="vehicle-selection-grid">
-                {vehicles.map(v => (
-                  <div 
-                    key={v._id} 
-                    className={`vehicle-card ${selectedVehicle?._id === v._id ? 'selected' : ''} ${inviteTrip && selectedVehicle?._id !== v._id ? 'disabled' : ''}`}
-                    onClick={() => {
-                      if (!inviteTrip) {
-                        setSelectedVehicle(v);
-                        setSelectedSeats([]);
-                      }
-                    }}
-                  >
-                    <div className="vehicle-image-wrapper">
-                      <img src={v.image} alt={v.name} />
-                      {selectedVehicle?._id === v._id && (
-                        <div className="selection-overlay">
-                          <CheckCircle className="selected-icon-large" size={32} />
+              <div className="vehicle-selection-section">
+                <label className="section-label"><Car size={18} /> Available Vehicles</label>
+                <div className="vehicle-selection-grid-modern">
+                  {vehicles.map(v => (
+                    <div 
+                      key={v._id} 
+                      className={`vehicle-card-modern ${selectedVehicle?._id === v._id ? 'selected' : ''} ${inviteTrip && selectedVehicle?._id !== v._id ? 'disabled' : ''}`}
+                      onClick={() => {
+                        if (!inviteTrip) {
+                          setSelectedVehicle(v);
+                          setSelectedSeats([]);
+                        }
+                      }}
+                    >
+                      <div className="v-card-image">
+                        <img src={v.image} alt={v.name} />
+                        <div className="v-card-badge">{v.capacity} Seats</div>
+                        {selectedVehicle?._id === v._id && (
+                          <div className="v-selected-check">
+                            <CheckCircle size={24} fill="currentColor" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="v-card-content">
+                        <div className="v-card-header">
+                          <h4>{v.name}</h4>
+                          <span className="v-card-type">{v.type}</span>
                         </div>
-                      )}
-                    </div>
-                    <div className="vehicle-card-info">
-                      <div className="v-header">
-                        <h4>{v.name}</h4>
-                        <span className="v-capacity">{v.capacity} Seats</span>
-                      </div>
-                      <p className="v-type">{v.type}</p>
-                      <div className="v-footer">
-                        <span className="v-price-tag">
+                        <div className="v-card-price">
                           {tour.isAllInclusive ? (
-                            <span className="inc-badge">Included</span>
+                            <span className="v-inc">All-Inclusive</span>
                           ) : (
-                            <>${v.pricePerDay}<small>/day</small></>
+                            <div className="v-price-display">
+                              <span className="v-amount">${v.pricePerDay}</span>
+                              <span className="v-period">/ day</span>
+                            </div>
                           )}
-                        </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
-              <div className="seat-selection-preview-card">
-                <div className="preview-info">
-                  <div className="info-icon-box"><Armchair size={24} /></div>
-                  <div>
-                    <h3>Seat Selection</h3>
-                    <p>{selectedSeats.length > 0 ? `${selectedSeats.length} of ${people} seats selected` : 'No seats selected yet'}</p>
+              <div className="seat-selection-integration-card">
+                <div className="seat-card-visual">
+                  <div className="seat-icon-container">
+                    <Armchair size={32} />
+                    <div className="seat-count-badge">{selectedSeats.length}</div>
                   </div>
                 </div>
-                <button className="open-seat-modal-btn" onClick={() => setShowSeatModal(true)}>
-                  {selectedSeats.length > 0 ? 'Edit Seat Selection' : 'Select Your Seats'}
+                <div className="seat-card-text">
+                  <h3>Secure Your Seats</h3>
+                  <p>
+                    {selectedSeats.length === parseInt(people) 
+                      ? "All travelers have seats assigned." 
+                      : `Please select ${people - selectedSeats.length} more ${people - selectedSeats.length === 1 ? 'seat' : 'seats'}.`}
+                  </p>
+                </div>
+                <button className="primary-outline-btn" onClick={() => setShowSeatModal(true)}>
+                  {selectedSeats.length > 0 ? 'Modify Seats' : 'Pick Seats'}
                 </button>
               </div>
 
-              <div className="step-actions">
-                <button className="back-step-btn" onClick={() => setBookingStep(1)}>Back</button>
+              <div className="step-footer split">
+                <button className="back-step-btn" onClick={() => setBookingStep(1)}>
+                  <ArrowLeft size={18} /> Back
+                </button>
                 <button 
                   className="next-step-btn" 
                   disabled={selectedSeats.length !== parseInt(people)}
@@ -454,28 +486,50 @@ const BookingPage = () => {
       {showSeatModal && (
         <div className="seat-modal-overlay fade-in">
           <div className="seat-modal-content slide-up">
-            <div className="modal-header">
-              <div className="modal-title-area">
-                <h2>Choose Your Seats</h2>
-                <p>Select {people} {people === 1 ? 'seat' : 'seats'} for your journey</p>
+            <div className="modal-header-modern">
+              <div className="modal-title-main">
+                <div className="title-icon-box">
+                  <Armchair size={24} />
+                </div>
+                <div>
+                  <h2>Select Your Seats</h2>
+                  <p>Vehicle: {selectedVehicle?.name}</p>
+                </div>
               </div>
-              <button className="close-modal-btn" onClick={() => setShowSeatModal(false)}>
-                <X size={24} />
+              
+              <div className="selection-progress-container">
+                <div className="progress-labels">
+                  <span>Selection Progress</span>
+                  <span>{selectedSeats.length} / {people}</span>
+                </div>
+                <div className="progress-bar-bg">
+                  <div 
+                    className="progress-bar-fill" 
+                    style={{ width: `${(selectedSeats.length / people) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <button className="close-modal-btn-modern" onClick={() => setShowSeatModal(false)}>
+                <X size={20} />
               </button>
             </div>
 
-            <div className="modal-body">
-              <div className="seat-selection-container">
-                <div className="vehicle-view-area">
-                  <div className="vehicle-layout-modern">
-                    <div className="bus-chassis-modern">
-                      <div className="driver-section-modern">
-                        <div className="steering-wheel-modern"></div>
-                        <div className="driver-seat">
-                          <Users size={18} />
-                        </div>
+            <div className="modal-body-modern">
+              <div className="seat-selection-layout">
+                <div className="vehicle-visual-container">
+                  <div className="vehicle-chassis">
+                    <div className="front-section">
+                      <div className="dashboard-line"></div>
+                      <div className="steering-container">
+                        <div className="steering-wheel-minimal"></div>
                       </div>
-                      
+                      <div className="driver-seat-minimal">
+                        <Users size={16} />
+                      </div>
+                    </div>
+                    
+                    <div className="cabin-area">
                       <div className="seats-grid-modern" style={{ 
                         gridTemplateColumns: `repeat(4, 1fr)`,
                       }}>
@@ -487,12 +541,14 @@ const BookingPage = () => {
                           return (
                             <div 
                               key={seatNum}
-                              className={`seat-modern ${isBooked ? 'booked' : ''} ${isSelected ? 'selected' : ''}`}
+                              className={`seat-modern-v2 ${isBooked ? 'booked' : ''} ${isSelected ? 'selected' : ''}`}
                               onClick={() => toggleSeat(seatNum)}
                             >
-                              <Armchair size={22} />
-                              <span className="seat-num-label">{seatNum}</span>
-                              {isSelected && <CheckCircle className="seat-check" size={12} />}
+                              <div className="seat-cushion">
+                                <span className="seat-number">{seatNum}</span>
+                                {isSelected && <CheckCircle size={14} className="selection-tick" />}
+                              </div>
+                              <div className="seat-backrest"></div>
                             </div>
                           );
                         })}
@@ -501,52 +557,57 @@ const BookingPage = () => {
                   </div>
                 </div>
 
-                <div className="selection-sidebar">
-                  <div className="selection-stats">
-                    <div className="stat-card">
-                      <span className="stat-label">Travelers</span>
-                      <span className="stat-value">{people}</span>
-                    </div>
-                    <div className="stat-card">
-                      <span className="stat-label">Selected</span>
-                      <span className={`stat-value ${selectedSeats.length === parseInt(people) ? 'success' : ''}`}>
-                        {selectedSeats.length}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="selected-seats-list">
-                    <h4>Your Selected Seats</h4>
-                    <div className="seats-pills">
+                <div className="selection-summary-sidebar">
+                  <div className="summary-section">
+                    <h4>Current Selection</h4>
+                    <div className="pills-container">
                       {selectedSeats.length > 0 ? (
                         selectedSeats.map(s => (
-                          <span key={s} className="seat-pill">
-                            Seat {s}
+                          <div key={s} className="seat-pill-modern">
+                            <span>Seat {s}</span>
                             <button onClick={() => toggleSeat(s)}><X size={12} /></button>
-                          </span>
+                          </div>
                         ))
                       ) : (
-                        <p className="no-seats-hint">No seats selected yet</p>
+                        <div className="empty-selection-state">
+                          <Info size={16} />
+                          <p>Tap on a seat to select</p>
+                        </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="legend-modern">
-                    <h4>Legend</h4>
-                    <div className="legend-grid">
-                      <div className="legend-item-modern"><div className="l-box avail"></div> Available</div>
-                      <div className="legend-item-modern"><div className="l-box sel"></div> Your Selection</div>
-                      <div className="legend-item-modern"><div className="l-box book"></div> Occupied</div>
+                  <div className="summary-section">
+                    <h4>Seat Legend</h4>
+                    <div className="legend-v2">
+                      <div className="legend-item-v2">
+                        <div className="l-dot available"></div>
+                        <span>Available</span>
+                      </div>
+                      <div className="legend-item-v2">
+                        <div className="l-dot selected"></div>
+                        <span>Your Seat</span>
+                      </div>
+                      <div className="legend-item-v2">
+                        <div className="l-dot booked"></div>
+                        <span>Unavailable</span>
+                      </div>
                     </div>
                   </div>
 
-                  <button 
-                    className="confirm-selection-btn"
-                    disabled={selectedSeats.length !== parseInt(people)}
-                    onClick={() => setShowSeatModal(false)}
-                  >
-                    Confirm Selection
-                  </button>
+                  <div className="sidebar-footer">
+                    <div className="traveler-brief">
+                      <Users size={16} />
+                      <span>{people} Travelers</span>
+                    </div>
+                    <button 
+                      className="confirm-selection-btn-v2"
+                      disabled={selectedSeats.length !== parseInt(people)}
+                      onClick={() => setShowSeatModal(false)}
+                    >
+                      Confirm Selection
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
