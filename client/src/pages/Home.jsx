@@ -268,35 +268,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="features-section">
-        <div className="section-header">
-          <span>The Art of Adventure</span>
-          <h2>Why Adventure with Tujibambe?</h2>
-        </div>
-        <div className="features-grid">
-          <div className="feature-item">
-            <div className="icon-box"><Compass /></div>
-            <h3>Expert Guides</h3>
-            <p>Our team of certified local experts is dedicated to your safety and discovery.</p>
-          </div>
-          <div className="feature-item">
-            <div className="icon-box"><Map /></div>
-            <h3>Untamed Landscapes</h3>
-            <p>From savannahs to snow-capped peaks, experience Africa's raw beauty.</p>
-          </div>
-          <div className="feature-item">
-            <div className="icon-box"><Shield /></div>
-            <h3>Eco-Friendly Travel</h3>
-            <p>We prioritize sustainable tourism to protect the wild for generations to come.</p>
-          </div>
-          <div className="feature-item">
-            <div className="icon-box"><Award /></div>
-            <h3>Luxury Safari</h3>
-            <p>Experience the perfect blend of wild adventure and premium comfort.</p>
-          </div>
-        </div>
-      </section>
 
       {/* Safari Rally Redesigned Elite Experience Section - V2 "Speed & Dust" */}
       <section className="rally-ultra-section">
@@ -543,6 +514,38 @@ const Home = () => {
           <div className="stat-card">
             <h3>15+</h3>
             <p>Years Experience</p>
+          </div>
+        </div>
+      </section>
+
+
+      
+      {/* Why Choose Us Section */}
+      <section className="features-section">
+        <div className="section-header">
+          <span>The Art of Adventure</span>
+          <h2>Why Adventure with Tujibambe?</h2>
+        </div>
+        <div className="features-grid">
+          <div className="feature-item">
+            <div className="icon-box"><Compass /></div>
+            <h3>Expert Guides</h3>
+            <p>Our team of certified local experts is dedicated to your safety and discovery.</p>
+          </div>
+          <div className="feature-item">
+            <div className="icon-box"><Map /></div>
+            <h3>Untamed Landscapes</h3>
+            <p>From savannahs to snow-capped peaks, experience Africa's raw beauty.</p>
+          </div>
+          <div className="feature-item">
+            <div className="icon-box"><Shield /></div>
+            <h3>Eco-Friendly Travel</h3>
+            <p>We prioritize sustainable tourism to protect the wild for generations to come.</p>
+          </div>
+          <div className="feature-item">
+            <div className="icon-box"><Award /></div>
+            <h3>Luxury Safari</h3>
+            <p>Experience the perfect blend of wild adventure and premium comfort.</p>
           </div>
         </div>
       </section>
