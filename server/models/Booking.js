@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 // Ensure models are registered for population
 require('./Tour');
 require('./User');
+require('./Vehicle');
 
 const bookingSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     tour: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
     trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }, // Link to a coordinator trip if any
+    vehicle: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' },
     bookingDate: { type: Date, required: true },
     numberOfPeople: { type: Number, required: true },
     selectedSeats: [{ type: Number }],

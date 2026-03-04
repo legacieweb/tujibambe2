@@ -3,18 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Calendar, Users, MapPin, Armchair, Share2, ArrowLeft, 
-  Ticket, CheckCircle, Clock, Info, ShieldCheck, CreditCard, 
-  Compass, ChevronRight, Copy, HelpCircle
+  Ticket, CheckCircle, ShieldCheck, CreditCard, 
+  Compass, Copy, HelpCircle, ChevronRight
 } from 'lucide-react';
-import '../styles/Dashboard.css';
+import '../styles/BookingDetails.css';
 
 const SeatLayout = ({ seats, capacity, bookedSeats }) => {
   const renderSeats = () => {
     const seatElements = [];
+    const mySeats = seats?.map(String) || [];
+    const othersBooked = bookedSeats?.map(String) || [];
+    
     for (let i = 1; i <= capacity; i++) {
-      const seatNum = i;
-      const isMySeat = seats?.map(String).includes(seatNum.toString());
-      const isBooked = bookedSeats?.map(String).includes(seatNum.toString()) && !isMySeat;
+      const seatNum = i.toString();
+      const isMySeat = mySeats.includes(seatNum);
+      const isBooked = othersBooked.includes(seatNum) && !isMySeat;
       
       seatElements.push(
         <div 
@@ -22,7 +25,7 @@ const SeatLayout = ({ seats, capacity, bookedSeats }) => {
           className={`seat-minimal ${isMySeat ? 'user' : ''} ${isBooked ? 'booked' : 'available'}`}
         >
           {isMySeat ? <div className="user-dot" /> : null}
-          <span className="num">{seatNum}</span>
+          <span className="num">{i}</span>
         </div>
       );
     }
@@ -55,6 +58,7 @@ const BookingDetails = () => {
     const fetchBooking = async () => {
       try {
         const token = localStorage.getItem('token');
+        // Use relative URL or process.env.REACT_APP_API_URL
         const res = await axios.get(`https://tujibambe2.onrender.com/api/bookings/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -69,8 +73,11 @@ const BookingDetails = () => {
   }, [id]);
 
   const copyInvite = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/tours/${booking.tour?._id}?invite=${booking.trip.inviteCode}`);
-    alert('Invite link copied!');
+    if (booking?.trip?.inviteCode) {
+      const inviteUrl = `${window.location.origin}/tours/${booking.tour?._id}?invite=${booking.trip.inviteCode}`;
+      navigator.clipboard.writeText(inviteUrl);
+      alert('Invite link copied to clipboard!');
+    }
   };
 
   if (loading) return (
@@ -79,13 +86,22 @@ const BookingDetails = () => {
       <p>Fine-tuning your itinerary...</p>
     </div>
   );
-  if (!booking) return <div className="error">Booking not found.</div>;
+  
+  if (!booking) return (
+    <div className="modern-loading-container full-page">
+      <HelpCircle size={48} color="#ef4444" />
+      <h3>Booking not found</h3>
+      <button className="minimal-back-btn" onClick={() => navigate('/dashboard')}>
+        <ArrowLeft size={18} /> Return to Dashboard
+      </button>
+    </div>
+  );
 
   return (
-    <div className="premium-details-page">
+    <div className="premium-details-page fade-in">
       <div className="details-header-nav">
         <button className="minimal-back-btn" onClick={() => navigate('/dashboard')}>
-          <ArrowLeft size={18} /> Dashboard
+          <ArrowLeft size={18} /> Back to Dashboard
         </button>
         <div className="header-meta">
           <span className="id-tag">REF: #{booking._id.slice(-6).toUpperCase()}</span>
@@ -94,7 +110,6 @@ const BookingDetails = () => {
       </div>
 
       <div className="premium-layout">
-        {/* Left Side: Visual & Primary Info */}
         <div className="layout-visual">
           <div className="main-hero-card">
             <img 
@@ -111,30 +126,30 @@ const BookingDetails = () => {
             <div className="ov-card">
               <Calendar size={20} className="ov-icon" />
               <div>
-                <label>Date</label>
+                <label>Departure</label>
                 <span>{new Date(booking.bookingDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
             </div>
             <div className="ov-card">
               <Users size={20} className="ov-icon" />
               <div>
-                <label>Guests</label>
-                <span>{booking.numberOfPeople} Person{booking.numberOfPeople > 1 ? 's' : ''}</span>
+                <label>Travelers</label>
+                <span>{booking.numberOfPeople} Guest{booking.numberOfPeople > 1 ? 's' : ''}</span>
               </div>
             </div>
             <div className="ov-card">
               <CreditCard size={20} className="ov-icon" />
               <div>
-                <label>Total</label>
-                <span>{booking.currency === 'KES' ? 'KSh' : '$'}{booking.totalPrice.toLocaleString()}</span>
+                <label>Total Paid</label>
+                <span>{booking.currency === 'KES' ? 'KSh' : '$'}{(booking.totalPrice || 0).toLocaleString()}</span>
               </div>
             </div>
           </div>
 
           <div className="details-card-modern">
             <div className="card-head">
-              <h2>Experience Details</h2>
-              <ShieldCheck size={18} className="shield-v" />
+              <h2>Adventure Overview</h2>
+              <ShieldCheck size={20} color="#c2912e" />
             </div>
             <p className="description-text">{booking.tour?.description}</p>
             
@@ -142,17 +157,16 @@ const BookingDetails = () => {
               {booking.tour?.isAllInclusive && (
                 <div className="perk"><Ticket size={14} /> All-Inclusive</div>
               )}
-              <div className="perk"><CheckCircle size={14} /> Instant Confirmation</div>
+              <div className="perk"><CheckCircle size={14} /> Confirmed</div>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Vehicle & Trip Management */}
         <div className="layout-controls">
           <div className="vehicle-management-card">
             <div className="card-head">
-              <h3><Armchair size={18} /> Seat Configuration</h3>
-              <div className="v-badge-minimal">{booking.trip?.vehicle?.name || 'Safari Van'}</div>
+              <h3><Armchair size={18} /> Seat Selection</h3>
+              <div className="v-badge-minimal">{booking.trip?.vehicle?.name || 'Safari Cruiser'}</div>
             </div>
             
             <SeatLayout 
@@ -162,36 +176,36 @@ const BookingDetails = () => {
             />
 
             <div className="minimal-legend">
-              <div className="leg-item"><div className="dot user" /> Mine</div>
-              <div className="leg-item"><div className="dot booked" /> Taken</div>
-              <div className="leg-item"><div className="dot available" /> Open</div>
+              <div className="leg-item"><div className="dot user" /> Reserved</div>
+              <div className="leg-item"><div className="dot booked" /> Occupied</div>
+              <div className="leg-item"><div className="dot available" /> Available</div>
             </div>
           </div>
 
           {booking.trip && (
             <div className="invite-management-card">
               <div className="card-head">
-                <h3><Share2 size={18} /> Group Trip</h3>
-                <span className="type-t">Invite Active</span>
+                <h3><Share2 size={18} /> Group Invitation</h3>
+                <span className="type-t" style={{fontSize: '0.75rem', fontWeight: 700, color: '#c2912e'}}>ACTIVE</span>
               </div>
-              <p>Share this trip with your friends to travel together.</p>
+              <p style={{fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem'}}>Invite friends to join this specific departure and travel together.</p>
               <div className="invite-box-minimal">
                 <span className="code">{booking.trip.inviteCode}</span>
-                <button onClick={copyInvite} title="Copy Link"><Copy size={16} /></button>
+                <button onClick={copyInvite} title="Copy Invitation Link"><Copy size={16} /></button>
               </div>
             </div>
           )}
 
           <div className="help-section-card">
             <div className="help-info">
-              <HelpCircle size={20} />
+              <HelpCircle size={24} color="#1a2f23" />
               <div>
-                <h4>Support & Help</h4>
-                <p>24/7 access to our team</p>
+                <h4>Need Assistance?</h4>
+                <p>Our concierge team is available 24/7 for your travel needs.</p>
               </div>
             </div>
             <button className="secondary-action-btn" onClick={() => navigate('/contact')}>
-              Contact Support <ChevronRight size={14} />
+              Get in Touch <ChevronRight size={16} />
             </button>
           </div>
         </div>

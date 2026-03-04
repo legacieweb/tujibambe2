@@ -38,6 +38,7 @@ const Navbar = () => {
             <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
             <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
             <Link to="/tours" onClick={() => setIsOpen(false)}>Safaris</Link>
+            <Link to="/car-hire" onClick={() => setIsOpen(false)}>Car Hire</Link>
             <Link to="/event-planner" onClick={() => setIsOpen(false)}>Events</Link>
             <Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
             <div className="nav-currency-selector">

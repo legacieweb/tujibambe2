@@ -12,23 +12,23 @@ const vehicles = [
         capacity: 7,
         image: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
         pricePerDay: 80,
-        features: ["Spacious interior", "Air conditioning", "Fuel efficient", "Comfortable seats"]
+        features: ["Spacious interior", "Air conditioning", "Fuel efficient", "Comfortable seats", "Music system"]
     },
     {
         name: "Toyota Hiace Tour Van",
         type: "Van",
-        capacity: 10,
-        image: "https://images.unsplash.com/photo-1565120130276-dfbd9a7a3ad7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        capacity: 14,
+        image: "https://i.pinimg.com/1200x/1a/18/75/1a18759e74bc22fedbdb6632034ddce1.jpg",
         pricePerDay: 100,
-        features: ["Pop-up roof", "Air conditioning", "Charging ports"]
+        features: ["Pop-up roof", "Air conditioning", "Charging ports", "music system"]
     },
     {
         name: "Luxury Overland Bus",
         type: "Bus",
-        capacity: 25,
-        image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        capacity: 40,
+        image: "https://i.pinimg.com/1200x/41/7a/5f/417a5f0242d0170e6765173223005c2e.jpg",
         pricePerDay: 300,
-        features: ["Reclining seats", "TV/Music system", "Luggage compartments", "Experienced driver"]
+        features: ["Reclining seats", "TV/Music system", "Luggage compartments"]
     }
 ];
 

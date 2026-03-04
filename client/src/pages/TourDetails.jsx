@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import SEO from '../components/SEO';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -85,6 +86,59 @@ const TourDetails = () => {
 
   return (
     <div className="tour-details-modern-page">
+      <SEO 
+        title={`${tour.title} - Tujibambe Adventures in Kenya`}
+        description={tour.description}
+        keywords={`${tour.title}, Kenya tours, ${tour.location}, adventure tours, safari, ${tour.category}`}
+        canonical={`https://tujibambe.iyonicorp.com/tours/${id}`}
+        image={tour.image}
+      />
+
+      {/* Structured Data for Tour */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TourPackage",
+          "name": tour.title,
+          "description": tour.description,
+          "url": `https://tujibambe.iyonicorp.com/tours/${id}`,
+          "provider": {
+            "@type": "TouristAttraction",
+            "name": "Tujibambe Adventures",
+            "telephone": "+254 (000) 111-222",
+            "email": "hello@tujibambe.com"
+          },
+          "image": tour.image,
+          "price": tour.price,
+          "priceCurrency": "USD",
+          "location": {
+            "@type": "Place",
+            "name": tour.location,
+            "address": {
+              "@type": "PostalAddress",
+              "addressCountry": "KE"
+            }
+          },
+          "duration": tour.duration,
+          "maximumAttendeeCapacity": tour.maxGroupSize,
+          "inclusion": [
+            "Professional Certified Guide",
+            "Comfortable 4x4 Transport",
+            "Lunch & Bottled Water",
+            "All Park Entry Fees"
+          ],
+          "exclusion": [
+            "Personal Insurance",
+            "Optional Activities & Gratuities",
+            "Alcoholic Beverages"
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "120"
+          }
+        })}
+      </script>
       {/* Dynamic Image Gallery Slider */}
       <section className="gallery-slider-section">
         <div className="slider-main">

@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import { 
   Calendar, 
   Users, 
@@ -54,6 +55,12 @@ const EventPlanner = () => {
 
   return (
     <div className="event-planner-page" style={{ backgroundColor: '#050505', color: 'white' }}>
+      <SEO 
+        title="Event Planning in Kenya - Tujibambe Adventures"
+        description="Plan your dream event in Kenya with Tujibambe Adventures. From luxury weddings to corporate retreats and private celebrations in breathtaking safari locations."
+        keywords="Kenya event planner, safari weddings, corporate retreats Kenya, event planning, luxury events Africa, wilderness celebrations"
+        canonical="https://tujibambe.iyonicorp.com/event-planner"
+      />
       {/* Premium Redesigned Hero Section */}
       <section className="hero-carousel redesigned-hero-premium" style={{ height: '100vh', position: 'relative', background: '#000', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="carousel-container" style={{ height: '100%', width: '100%' }}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import SEO from '../components/SEO';
 import { 
   Compass, 
   Map, 
@@ -44,11 +45,12 @@ const Home = () => {
         console.log('Fetched tours:', res.data); // Debug log
         
         // Update images in frontend to ensure they show correctly even if DB hasn't synced
-        const updatedTours = res.data.map(tour => {
-          if (tour.title.toLowerCase().includes('maasai mara')) {
+        const updatedTours = (res.data || []).map(tour => {
+          const title = tour.title?.toLowerCase() || '';
+          if (title.includes('maasai mara')) {
             return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
           }
-          if (tour.title.toLowerCase().includes('amboseli')) {
+          if (title.includes('amboseli')) {
             return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
           }
           return tour;
@@ -582,6 +584,42 @@ const Home = () => {
           </form>
         </div>
       </section>
+      {/* Structured Data for SEO */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "TouristAttraction",
+          "name": "Tujibambe Adventures",
+          "description": "Discover unforgettable adventure tours and safari experiences in Kenya with Tujibambe. From Maasai Mara wildlife safaris to Mount Kenya treks and coastal getaways.",
+          "url": "https://tujibambe.iyonicorp.com",
+          "telephone": "+254 (000) 111-222",
+          "email": "hello@tujibambe.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "123 Adventure Lane",
+            "addressLocality": "Nairobi",
+            "addressCountry": "KE"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -1.2921,
+            "longitude": 36.8219
+          },
+          "priceRange": "$$",
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "08:00",
+            "closes": "18:00"
+          },
+          "image": "https://tujibambe.iyonicorp.com/og-image.jpg",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "120"
+          }
+        })}
+      </script>
     </div>
   );
 };

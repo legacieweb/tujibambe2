@@ -28,18 +28,18 @@ export const CurrencyProvider = ({ children }) => {
   };
 
   const convertPrice = (price) => {
+    const val = Number(price) || 0;
     if (currency === 'KES') {
-      return Math.round(price * USD_TO_KES);
+      return Math.round(val * USD_TO_KES);
     }
-    return price;
+    return val;
   };
 
   const formatPrice = (price) => {
     const convertedPrice = convertPrice(price);
-    if (currency === 'KES') {
-      return `KSh ${convertedPrice.toLocaleString()}`;
-    }
-    return `$${convertedPrice.toLocaleString()}`;
+    return currency === 'KES' 
+      ? `KSh ${convertedPrice.toLocaleString()}` 
+      : `$${convertedPrice.toLocaleString()}`;
   };
 
   return (

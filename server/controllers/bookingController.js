@@ -44,6 +44,7 @@ exports.createBooking = async (req, res) => {
             user: req.user.id,
             tour,
             trip: finalTripId,
+            vehicle: vehicleId,
             bookingDate,
             numberOfPeople,
             totalPrice,
@@ -86,6 +87,7 @@ exports.getUserBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ user: req.user.id })
             .populate('tour')
+            .populate('vehicle')
             .populate({
                 path: 'trip',
                 populate: { path: 'vehicle' }
@@ -111,6 +113,7 @@ exports.getAllBookings = async (req, res) => {
         const bookings = await Booking.find()
             .populate('user')
             .populate('tour')
+            .populate('vehicle')
             .populate({
                 path: 'trip',
                 populate: { path: 'vehicle' }
@@ -136,6 +139,7 @@ exports.getBookingById = async (req, res) => {
         const booking = await Booking.findById(req.params.id)
             .populate('user')
             .populate('tour')
+            .populate('vehicle')
             .populate({
                 path: 'trip',
                 populate: { path: 'vehicle' }
@@ -183,6 +187,56 @@ exports.getBookedSeats = async (req, res) => {
         }, []);
         
         res.json(bookedSeats);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getOccupancy = async (req, res) => {
+    try {
+        const { tourId, date, vehicleId } = req.params;
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const bookings = await Booking.find({
+            tour: tourId,
+            bookingDate: { $gte: startOfDay, $lte: endOfDay },
+            vehicle: vehicleId,
+            status: { $ne: 'cancelled' }
+        });
+
+        const bookedSeatsCount = bookings.reduce((acc, b) => acc + b.selectedSeats.length, 0);
+        const vehicle = await Vehicle.findById(vehicleId);
+        const totalCapacity = vehicle ? vehicle.capacity : 0;
+
+        res.json({
+            booked: bookedSeatsCount,
+            total: totalCapacity,
+            percentage: totalCapacity > 0 ? (bookedSeatsCount / totalCapacity) * 100 : 0
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.deleteBooking = async (req, res) => {
+    try {
+        const booking = await Booking.findByIdAndDelete(req.params.id);
+        if (!booking) return res.status(404).json({ message: 'Booking not found' });
+        res.json({ message: 'Booking deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateBookingStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const booking = await Booking.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        if (!booking) return res.status(404).json({ message: 'Booking not found' });
+        res.json(booking);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

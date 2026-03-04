@@ -1,0 +1,470 @@
+:root {
+  --booking-bg: #f8fafc;
+  --booking-card-bg: #ffffff;
+  --booking-primary: #c2912e; /* Safari Gold */
+  --booking-secondary: #1a2f23; /* Forest Green */
+  --booking-text-main: #1e293b;
+  --user-text-secondary: #4b5563;
+  --booking-border: #e2e8f0;
+  --booking-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.premium-details-page {
+  background-color: var(--booking-bg);
+  min-height: 100vh;
+  padding: 2rem 4rem;
+  color: var(--booking-text-main);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.details-header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.minimal-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--user-text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.minimal-back-btn:hover {
+  color: var(--booking-primary);
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.id-tag {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f1f5f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: var(--user-text-secondary);
+}
+
+.status-pill-modern {
+  padding: 0.375rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-pill-modern.confirmed, .status-pill-modern.active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.status-pill-modern.pending {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.premium-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.main-hero-card {
+  position: relative;
+  height: 400px;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: var(--booking-shadow);
+}
+
+.main-hero-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.loc-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ov-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--booking-border);
+}
+
+.ov-icon {
+  color: var(--booking-primary);
+  background: var(--user-primary-light);
+  padding: 0.75rem;
+  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+}
+
+.ov-card label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--user-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 0.125rem;
+}
+
+.ov-card span {
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.details-card-modern {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid var(--booking-border);
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.card-head h2, .card-head h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.description-text {
+  line-height: 1.8;
+  color: var(--user-text-secondary);
+  margin-bottom: 2rem;
+}
+
+.perks-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.perk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--booking-secondary);
+  background: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+
+/* Side Controls */
+.layout-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.vehicle-management-card, .invite-management-card, .help-section-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 24px;
+  border: 1px solid var(--booking-border);
+  box-shadow: var(--booking-shadow);
+}
+
+.vehicle-preview-admin {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.v-admin-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.v-admin-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.feat-pill {
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.modern-bus-viz {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 20px;
+  border: 1px dashed #cbd5e1;
+}
+
+.bus-front {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+  padding-right: 1rem;
+}
+
+.steering-indicator {
+  width: 32px;
+  height: 32px;
+  background: #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.seats-flow {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.seats-flow.bus-layout {
+  grid-template-columns: 1fr 1fr 20px 1fr 1fr;
+}
+
+.seats-flow.van-layout, .seats-flow.mpv-layout {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.seat-aisle-spacer {
+  grid-column: span 1;
+}
+
+.category-tag {
+  background: var(--booking-primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.seat-minimal {
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.seat-minimal.available {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.seat-minimal.booked {
+  background: #f1f5f9;
+  color: #cbd5e1;
+}
+
+.seat-minimal.user {
+  background: var(--booking-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(194, 145, 46, 0.3);
+}
+
+.user-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.minimal-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--user-text-secondary);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.dot.user { background: var(--booking-primary); }
+.dot.booked { background: #f1f5f9; }
+.dot.available { border: 1px solid #e2e8f0; }
+
+.invite-box-minimal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  margin-top: 1rem;
+}
+
+.invite-box-minimal .code {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: var(--booking-secondary);
+}
+
+.invite-box-minimal button {
+  background: white;
+  border: 1px solid #e2e8f0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.invite-box-minimal button:hover {
+  background: var(--booking-primary);
+  color: white;
+  border-color: var(--booking-primary);
+}
+
+.help-info {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.help-info h4 {
+  font-weight: 800;
+}
+
+.help-info p {
+  font-size: 0.8125rem;
+  color: var(--user-text-secondary);
+}
+
+.secondary-action-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--booking-bg);
+  border: 1px solid var(--booking-border);
+  border-radius: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-action-btn:hover {
+  background: white;
+  border-color: var(--booking-primary);
+  color: var(--booking-primary);
+}
+
+@media (max-width: 1024px) {
+  .premium-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .premium-details-page {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-content h1 {
+    font-size: 1.75rem;
+  }
+  
+  .details-header-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

@@ -6,6 +6,7 @@ import Tours from './pages/Tours';
 import TourDetails from './pages/TourDetails';
 import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
+import CarHire from './pages/CarHire';
 import EventPlanner from './pages/EventPlanner';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -13,6 +14,8 @@ import UserDashboard from './pages/UserDashboard';
 import BookingDetails from './pages/BookingDetails';
 import BookingPage from './pages/BookingPage';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminTourForm from './pages/AdminTourForm';
+import AdminBookingDetails from './pages/AdminBookingDetails';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -27,6 +30,7 @@ const MainLayout = ({ children }) => (
     <Navbar />
     <CurrencyPopup />
     {children}
+    <Footer />
   </>
 );
 
@@ -42,15 +46,18 @@ function App() {
           <Route path="/book/:id" element={<MainLayout><BookingPage /></MainLayout>} />
           <Route path="/about" element={<MainLayout><AboutUs /></MainLayout>} />
           <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+          <Route path="/car-hire" element={<MainLayout><CarHire /></MainLayout>} />
           <Route path="/event-planner" element={<MainLayout><EventPlanner /></MainLayout>} />
-          <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
-          <Route path="/signup" element={<MainLayout><Signup /></MainLayout>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/dashboard/booking/:id" element={<BookingDetails />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/add-tour" element={<AdminTourForm />} />
+          <Route path="/admin/edit-tour/:id" element={<AdminTourForm />} />
+          <Route path="/admin/booking/:id" element={<AdminBookingDetails />} />
         </Routes>
-        <Footer />
       </Router>
     </AuthProvider>
   );

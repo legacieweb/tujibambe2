@@ -29,6 +29,27 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Check if user is authenticated
+  if (!user) {
+    return (
+      <div className="auth-required-container">
+        <div className="auth-required-content">
+          <ShieldCheck size={64} />
+          <h2>Authentication Required</h2>
+          <p>Please log in or sign up to book this tour.</p>
+          <div className="auth-buttons">
+            <button onClick={() => navigate('/login')} className="btn-primary">
+              Log In
+            </button>
+            <button onClick={() => navigate('/signup')} className="btn-secondary">
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   const [tour, setTour] = useState(null);
   const [people, setPeople] = useState(1);
   const [date, setDate] = useState('');
@@ -43,6 +64,7 @@ const BookingPage = () => {
   const [inviteTrip, setInviteTrip] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [countdown, setCountdown] = useState(20);
+  const [vehicleOccupancy, setVehicleOccupancy] = useState({});
   
   useEffect(() => {
     let timer;
@@ -104,6 +126,24 @@ const BookingPage = () => {
   }, [id, location.search]);
 
   useEffect(() => {
+    const fetchAllVehicleOccupancy = async () => {
+      if (date && vehicles.length > 0 && tour) {
+        const occupancy = {};
+        for (const v of vehicles) {
+          try {
+            const res = await axios.get(`https://tujibambe2.onrender.com/api/bookings/occupancy/${id}/${date}/${v._id}`);
+            occupancy[v._id] = res.data; // { booked, total, percentage }
+          } catch (err) {
+            occupancy[v._id] = { booked: 0, total: v.capacity, percentage: 0 };
+          }
+        }
+        setVehicleOccupancy(occupancy);
+      }
+    };
+    fetchAllVehicleOccupancy();
+  }, [date, vehicles, tour, id]);
+
+  useEffect(() => {
     const fetchBookedSeats = async () => {
       if (date && tour && !inviteTrip) {
         try {
@@ -136,11 +176,11 @@ const BookingPage = () => {
 
   const calculateTotal = () => {
     if (!tour) return 0;
-    const tourPrice = tour.price || 0;
+    const tourPrice = Number(tour.price) || 0;
     // Only charge vehicle price if not all-inclusive AND (is a coordinator OR not joining an existing trip)
     const shouldChargeVehicle = !tour.isAllInclusive && selectedVehicle && (isCoordinator || !inviteTrip);
-    const vehiclePrice = shouldChargeVehicle ? (selectedVehicle.pricePerDay || 0) : 0;
-    return (tourPrice * people) + vehiclePrice;
+    const vehiclePrice = shouldChargeVehicle ? (Number(selectedVehicle.pricePerDay) || 0) : 0;
+    return (tourPrice * (Number(people) || 1)) + vehiclePrice;
   };
 
   const totalAmount = calculateTotal();
@@ -303,7 +343,7 @@ const BookingPage = () => {
               <div className="vehicle-selection-section">
                 <label className="section-label"><Car size={18} /> Available Vehicles</label>
                 <div className="vehicle-selection-grid-modern">
-                  {vehicles.map(v => (
+                  {Array.isArray(vehicles) && vehicles.map(v => (
                     <div 
                       key={v._id} 
                       className={`vehicle-card-modern ${selectedVehicle?._id === v._id ? 'selected' : ''} ${inviteTrip && selectedVehicle?._id !== v._id ? 'disabled' : ''}`}
@@ -328,6 +368,28 @@ const BookingPage = () => {
                           <h4>{v.name}</h4>
                           <span className="v-card-type">{v.type}</span>
                         </div>
+                        
+                        {vehicleOccupancy[v._id] && (
+                          <div className="v-occupancy-container">
+                            <div className="v-occupancy-header">
+                              <span>Capacity</span>
+                              <span className="v-occupancy-stats">
+                                {vehicleOccupancy[v._id].booked}/{vehicleOccupancy[v._id].total} Booked
+                              </span>
+                            </div>
+                            <div className="v-progress-bar-bg">
+                              <div 
+                                className="v-progress-bar-fill" 
+                                style={{ 
+                                  width: `${Math.min(100, vehicleOccupancy[v._id].percentage)}%`,
+                                  backgroundColor: vehicleOccupancy[v._id].percentage > 90 ? '#ef4444' : 
+                                                  vehicleOccupancy[v._id].percentage > 70 ? '#f59e0b' : '#10b981'
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+
                         <div className="v-card-price">
                           {tour.isAllInclusive ? (
                             <span className="v-inc">All-Inclusive</span>
@@ -338,9 +400,15 @@ const BookingPage = () => {
                             </div>
                           )}
                         </div>
+                        <div className="v-card-features">
+                          {v.features?.slice(0, 3).map((f, idx) => (
+                            <span key={idx} className="feat-pill">{f}</span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
+                  {(!vehicles || vehicles.length === 0) && <p>No vehicles available.</p>}
                 </div>
               </div>
 
@@ -407,8 +475,9 @@ const BookingPage = () => {
                 <div className="summary-item">
                   <Car size={20} />
                   <div>
-                    <label>Vehicle</label>
-                    <p>{selectedVehicle?.name}</p>
+                    <label>Vehicle Choice</label>
+                    <p>{selectedVehicle?.name} ({selectedVehicle?.capacity} Seats)</p>
+                    {selectedVehicle?.image && <img src={selectedVehicle.image} alt={selectedVehicle.name} style={{width: '60px', borderRadius: '4px', marginTop: '5px'}} />}
                   </div>
                 </div>
                 <div className="summary-item">
@@ -422,7 +491,7 @@ const BookingPage = () => {
                   <CreditCard size={20} />
                   <div>
                     <label>Transport Fee</label>
-                    <p>{formatPrice(tour.price)} per person</p>
+                    <p>{formatPrice(Number(tour.price) || 0)} per person</p>
                   </div>
                 </div>
               </div>
@@ -462,7 +531,7 @@ const BookingPage = () => {
             <div className="price-breakdown">
               <div className="price-row">
                 <span>{people} x Transport Fee</span>
-                <span>{formatPrice(tour.price * people)}</span>
+                <span>{formatPrice((Number(tour.price) || 0) * (Number(people) || 1))}</span>
               </div>
               {selectedVehicle && (
                 <div className="price-row">
@@ -484,72 +553,76 @@ const BookingPage = () => {
       </div>
 
       {showSeatModal && (
-        <div className="seat-modal-overlay fade-in">
-          <div className="seat-modal-content slide-up">
-            <div className="modal-header-modern">
-              <div className="modal-title-main">
-                <div className="title-icon-box">
-                  <Armchair size={24} />
+        <div className="seat-modal-overlay glass-backdrop fade-in">
+          <div className="seat-modal-content-modern slide-up">
+            <div className="modal-header-v3">
+              <div className="modal-header-info">
+                <div className="header-icon-box">
+                  <Armchair size={24} className="primary-icon" />
                 </div>
                 <div>
-                  <h2>Select Your Seats</h2>
-                  <p>Vehicle: {selectedVehicle?.name}</p>
+                  <h2>Select Your Preferred Seats</h2>
+                  <p className="vehicle-subtitle"><Car size={14} /> {selectedVehicle?.name} • {selectedVehicle?.type}</p>
                 </div>
               </div>
               
-              <div className="selection-progress-container">
-                <div className="progress-labels">
-                  <span>Selection Progress</span>
-                  <span>{selectedSeats.length} / {people}</span>
+              <div className="selection-progress-modern">
+                <div className="progress-stats">
+                  <span className="label">Assignment Progress</span>
+                  <span className="ratio">{selectedSeats.length} / {people}</span>
                 </div>
-                <div className="progress-bar-bg">
+                <div className="progress-track">
                   <div 
-                    className="progress-bar-fill" 
+                    className="progress-fill" 
                     style={{ width: `${(selectedSeats.length / people) * 100}%` }}
                   ></div>
                 </div>
               </div>
 
-              <button className="close-modal-btn-modern" onClick={() => setShowSeatModal(false)}>
+              <button className="close-v3" onClick={() => setShowSeatModal(false)}>
                 <X size={20} />
               </button>
             </div>
 
-            <div className="modal-body-modern">
-              <div className="seat-selection-layout">
-                <div className="vehicle-visual-container">
-                  <div className="vehicle-chassis">
-                    <div className="front-section">
-                      <div className="dashboard-line"></div>
-                      <div className="steering-container">
-                        <div className="steering-wheel-minimal"></div>
-                      </div>
-                      <div className="driver-seat-minimal">
-                        <Users size={16} />
+            <div className="modal-body-v3">
+              <div className="modern-selection-grid">
+                <div className="vehicle-visual-v3">
+                  <div className="chassis-container">
+                    <div className="vehicle-front-v3">
+                      <div className="dashboard-v3"></div>
+                      <div className="controls-v3">
+                        <div className="steering-v3"></div>
+                        <div className="driver-zone">
+                          <Users size={16} />
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="cabin-area">
-                      <div className="seats-grid-modern" style={{ 
-                        gridTemplateColumns: `repeat(4, 1fr)`,
-                      }}>
+                    <div className="cabin-v3">
+                      <div className={`seats-grid-v3 ${selectedVehicle?.capacity > 20 ? 'bus-config' : selectedVehicle?.capacity > 10 ? 'van-config' : 'mpv-config'}`}>
                         {Array.from({ length: selectedVehicle?.capacity || 8 }).map((_, i) => {
                           const seatNum = i + 1;
                           const isBooked = bookedSeats.includes(seatNum) || bookedSeats.includes(seatNum.toString());
                           const isSelected = selectedSeats.includes(seatNum);
                           
+                          // Add Aisle for Bus
+                          const showAisle = selectedVehicle?.capacity > 20 && (i + 1) % 2 === 0 && (i + 1) % 4 !== 0;
+                          
                           return (
-                            <div 
-                              key={seatNum}
-                              className={`seat-modern-v2 ${isBooked ? 'booked' : ''} ${isSelected ? 'selected' : ''}`}
-                              onClick={() => toggleSeat(seatNum)}
-                            >
-                              <div className="seat-cushion">
-                                <span className="seat-number">{seatNum}</span>
-                                {isSelected && <CheckCircle size={14} className="selection-tick" />}
+                            <React.Fragment key={seatNum}>
+                              <div 
+                                className={`seat-modern-v3 ${isBooked ? 'is-booked' : ''} ${isSelected ? 'is-selected' : ''}`}
+                                onClick={() => toggleSeat(seatNum)}
+                              >
+                                <div className="seat-top"></div>
+                                <div className="seat-main">
+                                  <span className="s-num">{seatNum}</span>
+                                  {isSelected && <CheckCircle size={12} className="s-check" />}
+                                </div>
+                                <div className="seat-shadow"></div>
                               </div>
-                              <div className="seat-backrest"></div>
-                            </div>
+                              {showAisle && <div className="aisle-v3"></div>}
+                            </React.Fragment>
                           );
                         })}
                       </div>
@@ -557,55 +630,61 @@ const BookingPage = () => {
                   </div>
                 </div>
 
-                <div className="selection-summary-sidebar">
-                  <div className="summary-section">
-                    <h4>Current Selection</h4>
-                    <div className="pills-container">
+                <div className="selection-details-v3">
+                  <div className="detail-section-v3">
+                    <div className="section-title-v3">
+                      <Armchair size={16} />
+                      <h4>Selected Seats</h4>
+                    </div>
+                    <div className="selected-pills-v3">
                       {selectedSeats.length > 0 ? (
                         selectedSeats.map(s => (
-                          <div key={s} className="seat-pill-modern">
+                          <div key={s} className="seat-pill-v3">
                             <span>Seat {s}</span>
-                            <button onClick={() => toggleSeat(s)}><X size={12} /></button>
+                            <button className="remove-s" onClick={() => toggleSeat(s)}><X size={12} /></button>
                           </div>
                         ))
                       ) : (
-                        <div className="empty-selection-state">
+                        <div className="no-selection-v3">
                           <Info size={16} />
-                          <p>Tap on a seat to select</p>
+                          <p>Click on any seat to begin assignment</p>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="summary-section">
-                    <h4>Seat Legend</h4>
-                    <div className="legend-v2">
-                      <div className="legend-item-v2">
-                        <div className="l-dot available"></div>
+                  <div className="detail-section-v3">
+                    <div className="section-title-v3">
+                      <Info size={16} />
+                      <h4>Seating Legend</h4>
+                    </div>
+                    <div className="legend-v3">
+                      <div className="leg-v3">
+                        <div className="dot-v3 available"></div>
                         <span>Available</span>
                       </div>
-                      <div className="legend-item-v2">
-                        <div className="l-dot selected"></div>
-                        <span>Your Seat</span>
+                      <div className="leg-v3">
+                        <div className="dot-v3 selected"></div>
+                        <span>Your Selection</span>
                       </div>
-                      <div className="legend-item-v2">
-                        <div className="l-dot booked"></div>
+                      <div className="leg-v3">
+                        <div className="dot-v3 booked"></div>
                         <span>Unavailable</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="sidebar-footer">
-                    <div className="traveler-brief">
+                  <div className="sidebar-action-v3">
+                    <div className="traveler-summary-v3">
                       <Users size={16} />
-                      <span>{people} Travelers</span>
+                      <span>Booking for <strong>{people} {people === 1 ? 'Traveler' : 'Travelers'}</strong></span>
                     </div>
                     <button 
-                      className="confirm-selection-btn-v2"
+                      className="confirm-seats-v3"
                       disabled={selectedSeats.length !== parseInt(people)}
                       onClick={() => setShowSeatModal(false)}
                     >
-                      Confirm Selection
+                      {selectedSeats.length === parseInt(people) ? 'Lock Seating' : `Select ${parseInt(people) - selectedSeats.length} more`}
                     </button>
                   </div>
                 </div>

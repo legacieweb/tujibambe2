@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import SEO from '../components/SEO';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -44,17 +45,18 @@ const Tours = () => {
         const response = await axios.get('https://tujibambe2.onrender.com/api/tours');
         
         // Map high-quality images for specific tours to ensure they show correctly
-        const updatedTours = response.data.map(tour => {
-          if (tour.title.toLowerCase().includes('maasai mara')) {
+        const updatedTours = (response.data || []).map(tour => {
+          const title = tour.title?.toLowerCase() || '';
+          if (title.includes('maasai mara')) {
             return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
           }
-          if (tour.title.toLowerCase().includes('amboseli')) {
+          if (title.includes('amboseli')) {
             return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
           }
-          if (tour.title.toLowerCase().includes('mount kenya')) {
+          if (title.includes('mount kenya')) {
             return { ...tour, image: "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995" };
           }
-          if (tour.title.toLowerCase().includes('safari rally')) {
+          if (title.includes('safari rally')) {
             return { ...tour, image: "https://image.api.sportal365.com/process/smp-images-production/pulselive.co.ke/22082024/e9bbcf6d-d167-4b86-b649-1743f9967943" };
           }
           return tour;
@@ -64,7 +66,7 @@ const Tours = () => {
         setFilteredTours(updatedTours);
 
         // Calculate hero stats
-        const destinations = new Set(updatedTours.map(tour => tour.location)).size;
+        const destinations = new Set(updatedTours.map(tour => tour.location || 'Unknown')).size;
         const reviews = updatedTours.reduce((sum, tour) => sum + (tour.reviews || 0), 0);
 
         setHeroStats({
@@ -85,12 +87,12 @@ const Tours = () => {
   // Filter and sort tours
   useEffect(() => {
     let filtered = tours.filter(tour => {
-      const matchesSearch = tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          tour.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          tour.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = (tour.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (tour.location || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (tour.description || '').toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesCategory = selectedCategory === 'All' || tour.category === selectedCategory;
-      const matchesPrice = tour.price >= priceRange[0] && tour.price <= priceRange[1];
+      const matchesPrice = (tour.price || 0) >= priceRange[0] && (tour.price || 0) <= priceRange[1];
       const matchesRating = selectedRating === 0 || (tour.rating || 4.8) >= selectedRating;
 
       return matchesSearch && matchesCategory && matchesPrice && matchesRating;
@@ -135,7 +137,7 @@ const Tours = () => {
     setSortBy('name');
   };
 
-  const categories = ['All', ...new Set(tours.map(tour => tour.category))];
+  const categories = ['All', ...new Set((tours || []).map(tour => tour.category).filter(Boolean))];
 
   if (loading) {
     return (
@@ -149,6 +151,12 @@ const Tours = () => {
 
   return (
     <div className="tours-page">
+      <SEO 
+        title="Kenya Tours & Safari Packages - Tujibambe Adventures"
+        description="Explore our hand-picked selection of adventure tours and safari packages in Kenya. From Maasai Mara wildlife safaris to Mount Kenya treks and coastal getaways."
+        keywords="Kenya tours, safari packages, Maasai Mara, Mount Kenya, Diani Beach, Amboseli, Kenya travel, adventure tours, wildlife safaris, Kenyan destinations"
+        canonical="https://tujibambe.iyonicorp.com/tours"
+      />
       {/* Immersive Hero Section */}
       <section className="tours-hero">
         <div className="hero-video-bg">
@@ -166,23 +174,7 @@ const Tours = () => {
         <div className="hero-content">
           <h1 className="hero-title">Explore Our Tours</h1>
           <p className="hero-subtitle">Discover the magic of Kenya through our hand-picked adventure experiences.</p>
-          
-          <div className="hero-stats-container">
-            <div className="stat-item">
-              <span className="stat-value">{heroStats.totalTours}</span>
-              <span className="stat-label">Adventures</span>
-            </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-value">{heroStats.totalDestinations}</span>
-              <span className="stat-label">Destinations</span>
-            </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-value">{heroStats.totalReviews}+</span>
-              <span className="stat-label">Happy Travelers</span>
-            </div>
-          </div>
+
         </div>
       </section>
 
