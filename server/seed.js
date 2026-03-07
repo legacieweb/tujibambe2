@@ -90,15 +90,15 @@ const tours = [
         description: "Experience elephants against the backdrop of Mount Kilimanjaro in this iconic park.",
         location: "Amboseli",
         price: 450,
-        image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
+        image: "https://www.telegraph.co.uk/multimedia/archive/01816/kenya2_1816314b.jpg",
         duration: "2 Days",
         category: "Safari",
         maxGroupSize: 10,
         type: "group",
         gallery: [
-            "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
-            "https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1518115684291-7f9999086050?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            "https://www.telegraph.co.uk/multimedia/archive/01816/kenya2_1816314b.jpg",
+            "https://res.cloudinary.com/tourhq/image/upload/fl_progressive,f_auto,h_507,w_900,g_auto,c_fill,q_auto/nomalk5mw2hcmmrhxuut",
+            "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg"
         ]
     },
     {

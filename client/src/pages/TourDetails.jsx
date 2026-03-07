@@ -45,7 +45,12 @@ const TourDetails = () => {
         if (tourData.title.toLowerCase().includes('maasai mara')) {
           tourData.image = "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg";
         } else if (tourData.title.toLowerCase().includes('amboseli')) {
-          tourData.image = "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg";
+          tourData.image = "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg";
+          tourData.gallery = [
+            "https://www.telegraph.co.uk/multimedia/archive/01816/kenya2_1816314b.jpg",
+            "https://res.cloudinary.com/tourhq/image/upload/fl_progressive,f_auto,h_507,w_900,g_auto,c_fill,q_auto/nomalk5mw2hcmmrhxuut",
+            "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg"
+          ];
         } else if (tourData.title.toLowerCase().includes('mount kenya')) {
           tourData.image = "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995";
         } else if (tourData.title.toLowerCase().includes('safari rally')) {

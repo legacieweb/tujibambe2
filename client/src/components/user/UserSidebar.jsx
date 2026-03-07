@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   LayoutDashboard, MapPin, User as UserIcon, 
-  Settings, LogOut, Compass, X, Shield 
+  Settings, LogOut, Compass, X, Shield, Calendar 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ const UserSidebar = ({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen,
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, action: () => { setActiveTab('dashboard'); setIsSidebarOpen(false); } },
     { id: 'car-bookings', label: 'My Car Hires', icon: Compass, action: () => { setActiveTab('car-bookings'); setIsSidebarOpen(false); } },
+    { id: 'event-planning', label: 'Event Planning', icon: Calendar, action: () => { setActiveTab('event-planning'); setIsSidebarOpen(false); } },
     { id: 'tours', label: 'Browse Tours', icon: MapPin, action: () => { navigate('/tours'); setIsSidebarOpen(false); } },
     { id: 'profile', label: 'Profile', icon: UserIcon, action: () => { setActiveTab('profile'); setIsSidebarOpen(false); } },
     { id: 'settings', label: 'Settings', icon: Settings, action: () => { setActiveTab('settings'); setIsSidebarOpen(false); } },

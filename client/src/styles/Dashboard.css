@@ -113,6 +113,18 @@ body {
   left: 0;
   z-index: 1000;
   transition: transform 0.3s ease;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dashboard-sidebar::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
 }
 
 .sidebar-header {
@@ -357,6 +369,12 @@ body {
   background: var(--bg-primary);
   color: var(--primary);
   border-color: var(--primary);
+}
+
+.icon-action-btn.danger-hover:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .avatar-circle {
@@ -1085,3 +1103,51 @@ body {
   50% { transform: scale(1.1); opacity: 1; }
   100% { transform: scale(0.8); opacity: 0.5; }
 }
+
+.booking-type-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.badge-modern {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.admin-info-banner {
+  display: flex;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 20px;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.banner-icon {
+  color: var(--primary);
+}
+
+.banner-text h4 {
+  margin-bottom: 5px;
+  color: var(--text-primary);
+}
+
+.banner-text p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+

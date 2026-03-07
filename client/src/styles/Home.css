@@ -29,9 +29,10 @@
 /* Hero Carousel Section */
 .hero-carousel {
   position: relative;
-  height: 100vh;
+  height: calc(100vh + 120px);
   overflow: hidden;
   background: #000;
+  padding-top: 120px;
 }
 
 .carousel-container {
@@ -168,7 +169,7 @@
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #fff, var(--primary));
+  background: linear-gradient(to right, #ffbb00, var(--primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -231,23 +232,24 @@
 }
 
 .btn-modern-secondary {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: transparent;
   color: white;
   padding: 18px 35px;
   border-radius: 100px;
   text-decoration: none;
   font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--primary);
   transition: all 0.3s ease;
 }
 
 .btn-modern-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px);
+  background: var(--primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4);
 }
 
 .carousel-arrow {
@@ -306,6 +308,58 @@
   .carousel-arrow.prev { right: 90px; }
   .carousel-arrow.next { right: 30px; }
   .carousel-indicators { left: 30px; bottom: 30px; }
+}
+
+.miniplayer-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .miniplayer-mobile {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    height: 180px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 30px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    animation: fadeInScale 0.8s ease-out 0.5s both;
+  }
+
+  .miniplayer-mobile video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .miniplayer-label {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--primary);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .featured-slide .slide-video-bg {
+    display: none;
+  }
 }
 
 .indicator {
@@ -978,6 +1032,91 @@
 .newsletter-form button:hover {
   background: #1a1a1a;
   transform: scale(1.05);
+}
+
+/* Modern Service Tiles */
+.service-tiles-section {
+  padding: 40px 0;
+  margin-top: -60px;
+  position: relative;
+  z-index: 20;
+}
+
+.tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-tile {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.service-tile:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-10px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.tile-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 77, 0, 0.1);
+  color: var(--primary);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.service-tile:hover .tile-icon {
+  background: var(--primary);
+  color: white;
+}
+
+.tile-content h3 {
+  color: white;
+  font-size: 1.25rem;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.tile-content p {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.tile-arrow {
+  color: rgba(255,255,255,0.2);
+  margin-left: auto;
+  transition: all 0.3s ease;
+}
+
+.service-tile:hover .tile-arrow {
+  color: var(--primary);
+  transform: translateX(5px);
+}
+
+@media (max-width: 1024px) {
+  .tiles-grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
 }
 
 /* RESPONSIVE BREAKPOINTS */

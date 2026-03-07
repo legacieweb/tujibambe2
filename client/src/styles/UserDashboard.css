@@ -61,6 +61,22 @@
   left: 0;
   z-index: 1000;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--user-primary) transparent;
+}
+
+.user-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.user-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.user-sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--user-primary);
+  border-radius: 20px;
 }
 
 .user-sidebar .sidebar-header {
@@ -1897,4 +1913,214 @@
   background: linear-gradient(135deg, var(--user-primary) 0%, #fbbf24 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Event Planning Tab Styles */
+.event-planning-dashboard {
+  max-width: 1000px;
+}
+
+.pending-plan-card {
+  background: rgba(241, 196, 15, 0.05);
+  border: 2px dashed rgba(241, 196, 15, 0.3);
+  border-radius: var(--user-radius-xl);
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(241, 196, 15, 0.1);
+  color: #f1c40f;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 1.5rem;
+}
+
+.services-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.service-chip {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8125rem;
+  color: var(--user-text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plan-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.est-budget label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--user-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.est-budget strong {
+  font-size: 1.75rem;
+  color: white;
+}
+
+.plan-notice {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--user-text-muted);
+  font-size: 0.75rem;
+}
+
+.event-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.event-plan-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-price {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.plan-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btn-pay-event {
+  background: var(--user-success);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.waiting-badge, .confirmed-badge {
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.waiting-badge {
+  background: rgba(241, 196, 15, 0.1);
+  color: #f1c40f;
+}
+
+.confirmed-badge {
+  background: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+
+.info-section {
+  margin-top: 4rem;
+  padding: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.info-icon-box {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--user-primary);
+  flex-shrink: 0;
+}
+
+.info-text h4 {
+  margin-bottom: 1rem;
+}
+
+.info-text ol {
+  padding-left: 1.25rem;
+  color: var(--user-text-secondary);
+  line-height: 1.8;
+}
+
+/* Event Details Views */
+.event-ticket-card {
+  padding: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ticket-visual-mini {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+}
+
+.ticket-info-mini strong {
+  display: block;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.ticket-info-mini span {
+  font-size: 0.75rem;
+  color: var(--user-text-muted);
+}
+
+.ticket-hint {
+  font-size: 0.8125rem;
+  color: var(--user-text-muted);
+  text-align: center;
 }

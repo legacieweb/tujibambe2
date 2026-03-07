@@ -26,7 +26,8 @@ import {
   Star,
   Users,
   Calendar,
-  Sparkles
+  Sparkles,
+  Car
 } from 'lucide-react';
 import '../styles/Home.css';
 import heroVideo from '../assets/184737-873923039_small.mp4';
@@ -51,7 +52,7 @@ const Home = () => {
             return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
           }
           if (title.includes('amboseli')) {
-            return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
+            return { ...tour, image: "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg" };
           }
           return tour;
         });
@@ -74,10 +75,10 @@ const Home = () => {
   const safariRallyTour = getTourByTitle("Safari Rally Kenya");
   const amboseliTour = getTourByTitle("Amboseli National Park Safari");
 
-  // Define carousel slides with direct tour IDs
+  // Define carousel slides as Services
   const carouselSlides = [
     {
-      title: "Safari Rally Kenya 2026",
+      title: "Safari Rally Kenya",
       subtitle: "World Rally Championship",
       description: `Experience the thrill of high-speed rally racing across Kenya's stunning landscapes. All-inclusive transport for only ${formatPrice(20)}.`,
       image: "https://image.api.sportal365.com/process/smp-images-production/pulselive.co.ke/22082024/e9bbcf6d-d167-4b86-b649-1743f9967943",
@@ -88,31 +89,40 @@ const Home = () => {
       tourTitle: "Safari Rally Kenya"
     },
     {
-      title: "Maasai Mara Safari",
-      subtitle: "Witness the Great Migration",
-      description: "Experience the world's most famous wildlife reserve and the Big Five",
+      title: "Unforgettable Safaris",
+      subtitle: "Nature & Wildlife",
+      description: "Witness the Great Migration and the Big Five in Kenya's premier national parks and reserves.",
       image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg",
-      buttonText: "Explore",
-      buttonLink: safariTour ? `/tours/${safariTour._id}` : "/tours", // Direct Maasai Mara ID
-      tourTitle: "Maasai Mara Safari"
+      buttonText: "Explore Safaris",
+      buttonLink: "/tours",
+      tourTitle: "Safaris"
     },
     {
-      title: "Amboseli National Park Safari",
-      subtitle: "Elephant Paradise",
-      description: "Witness massive elephant herds against the backdrop of Mt. Kilimanjaro",
-      image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg",
-      buttonText: "View Park",
-      buttonLink: amboseliTour ? `/tours/${amboseliTour._id}` : "/tours",
-      tourTitle: "Amboseli National Park Safari"
-    },
-    {
-      title: "Mount Kenya Expedition",
-      subtitle: "Climb Africa's Second Highest Peak",
-      description: "A thrilling adventure to the summit with breathtaking alpine views",
+      title: "Epic Adventures",
+      subtitle: "Push Your Limits",
+      description: "From mountain climbing to adrenaline-pumping sports, discover your next big thrill.",
       image: "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995",
-      buttonText: "Start Climb",
-      buttonLink: hikingTour ? `/tours/${hikingTour._id}` : "/tours", // Direct Mount Kenya ID
-      tourTitle: "Mount Kenya Expedition"
+      buttonText: "View Adventures",
+      buttonLink: "/adventures",
+      tourTitle: "Adventures"
+    },
+    {
+      title: "Epic Fun Times",
+      subtitle: "Events & Nightlife",
+      description: "Join the most vibrant parties and social events. Featured Tropical Pool Party this April!",
+      image: "https://nax.today/storage/uploads/2025/07/nightlife-1752224415.jpg",
+      buttonText: "Join the Fun",
+      buttonLink: "/epic-fun-times",
+      tourTitle: "Epic Fun Times"
+    },
+    {
+      title: "Premium Car Hire",
+      subtitle: "Travel in Comfort",
+      description: "Reliable and luxury vehicle rentals for your self-drive or chauffeured needs across Kenya.",
+      image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      buttonText: "Rent a Car",
+      buttonLink: "/car-hire",
+      tourTitle: "Car Hire"
     }
   ];
 
@@ -201,6 +211,17 @@ const Home = () => {
                 <div className="carousel-content-wrapper">
                   {slide.isFeatured && <span className="featured-badge"><Award size={16} /> <Sparkles size={16} style={{marginRight: '8px'}} /> Exclusive Experience</span>}
                   <span className="carousel-subtitle">{slide.subtitle}</span>
+                  {slide.isFeatured && (
+                    <div className="miniplayer-mobile">
+                      <video autoPlay muted loop playsInline>
+                        <source src={slide.video} type="video/mp4" />
+                      </video>
+                      <div className="miniplayer-label">
+                        <Play size={12} fill="currentColor" />
+                        LIVE ACTION
+                      </div>
+                    </div>
+                  )}
                   <h1 className="carousel-title">
                     {slide.title.split(' ').map((word, i) => (
                       i === slide.title.split(' ').length - 1 ? <span key={i} className="text-gradient"> {word}</span> : word + ' '
@@ -270,7 +291,6 @@ const Home = () => {
         </div>
       </section>
 
-
       {/* Safari Rally Redesigned Elite Experience Section - V2 "Speed & Dust" */}
       <section className="rally-ultra-section">
         <div className="rally-bg-text">SAFARI RALLY</div>
@@ -285,7 +305,7 @@ const Home = () => {
               </div>
             </div>
             <div className="secondary-image-wrapper">
-              <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Rally Fans" className="rally-img-sub" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Kenya_KCB_Rally_Naivasha_3.jpg/1920px-Kenya_KCB_Rally_Naivasha_3.jpg" alt="Rally Fans" className="rally-img-sub" />
               <div className="exclusive-badge">
                 <Star fill="currentColor" size={12} />
                 <span>EXCLUSIVE</span>
@@ -345,7 +365,7 @@ const Home = () => {
       <section className="featured-tours-section">
         <div className="section-header">
           <span>Explore Kenya</span>
-          <h2>Available Adventures</h2>
+          <h2>Safaris, Car Hire and Events</h2>
         </div>
         <div className="tours-grid-home">
           {featuredTours.map((tour) => (
@@ -372,7 +392,7 @@ const Home = () => {
           ))}
         </div>
         <div className="view-all-container">
-          <Link to="/tours" className="btn-modern-secondary">
+          <Link to="/tours" className="btn-modern-secondary-prominent">
             View All Adventures <ArrowRight size={20} />
           </Link>
         </div>
@@ -413,7 +433,7 @@ const Home = () => {
             </div>
           </div>
           <div className="activity-card">
-            <div className="activity-img" style={{backgroundImage: "url('https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg')"}}></div>
+            <div className="activity-img" style={{backgroundImage: "url('https://www.discoverafrica.com/wp-content/uploads/2014/01/Hot-Air-Balloon.jpg')"}}></div>
             <div className="activity-overlay">
               <Camera size={40} />
               <h3>Balloon Flights</h3>
@@ -433,13 +453,13 @@ const Home = () => {
         <div className="gallery-grid">
           <div className="gallery-item large">
             <div className="image-frame">
-              <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Great Rift Valley" />
+              <img src="https://www.thoughtco.com/thmb/b6o-DRRF_0ah7TZR97zgIWOk0NQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/ethiopia-rift-valley-aerial-view-sb10068596hq-001-5878cd753df78c17b65b7898.jpg" alt="Great Rift Valley" />
             </div>
             <div className="gallery-caption">Great Rift Valley</div>
           </div>
           <div className="gallery-item">
             <div className="image-frame">
-              <img src="https://images.unsplash.com/photo-1589182397057-b82d519d99c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mt Kenya" />
+              <img src="https://afar.brightspotcdn.com/dims4/default/006514a/2147483647/strip/true/crop/728x500+36+0/resize/660x453!/format/webp/quality/90/?url=https%3A%2F%2Fk3-prod-afar-media.s3.us-west-2.amazonaws.com%2Fbrightspot%2F52%2F27%2F75e5a780203adc8e148104996ede%2Foriginal-925782c19d188263e00bf14985b940b2.jpg" alt="Mt Kenya" />
             </div>
             <div className="gallery-caption">Mt. Kenya Peaks</div>
           </div>
@@ -451,7 +471,7 @@ const Home = () => {
           </div>
           <div className="gallery-item">
             <div className="image-frame">
-              <img src="https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" alt="Amboseli" />
+              <img src="https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg" alt="Amboseli" />
             </div>
             <div className="gallery-caption">Amboseli Giants</div>
           </div>
@@ -471,7 +491,7 @@ const Home = () => {
           <h2>Kenya's Rich Culture</h2>
         </div>
         <div className="culture-grid">
-          <div className="culture-card" style={{backgroundImage: "url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"}}>
+          <div className="culture-card" style={{backgroundImage: "url('https://safarisoko.com/wp-content/uploads/2024/08/traditional-music-dance-tanzania-1-1024x683.jpg')"}}>
             <div className="card-overlay"></div>
             <div className="card-content">
               <Music size={50} />
@@ -487,7 +507,7 @@ const Home = () => {
               <p>Savor the flavors of Nyama Choma, Ugali, and Swahili dishes from the coast.</p>
             </div>
           </div>
-          <div className="culture-card" style={{backgroundImage: "url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"}}>
+          <div className="culture-card" style={{backgroundImage: "url('https://i0.wp.com/nairobifashionhub.co.ke/wp-content/uploads/2020/03/Nairobi-fashion-hub-Top-10-gift-shops-in-Kenya-1.jpg?ssl=1')"}}>
             <div className="card-overlay"></div>
             <div className="card-content">
               <Camera size={50} />
@@ -573,17 +593,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section -> Adventure Club */}
-      <section className="newsletter-section">
-        <div className="newsletter-content">
-          <h2>Join the Adventure Club</h2>
-          <p>Subscribe to receive exclusive tour offers and wilderness tips.</p>
-          <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Enter your email address" required />
-            <button type="submit" className="btn-primary">Subscribe</button>
-          </form>
-        </div>
-      </section>
       {/* Structured Data for SEO */}
       <script type="application/ld+json">
         {JSON.stringify({

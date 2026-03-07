@@ -7,6 +7,8 @@ const AdminVehicles = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
+  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
+  
   const [formData, setFormData] = useState({
     name: '',
     type: 'Land Cruiser',
@@ -25,7 +27,7 @@ const AdminVehicles = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/vehicles');
+      const response = await axios.get(`${API_BASE_URL}/api/vehicles`);
       setVehicles(response.data);
       setLoading(false);
     } catch (err) {
@@ -43,16 +45,16 @@ const AdminVehicles = () => {
     const token = localStorage.getItem('token');
     const data = {
       ...formData,
-      features: formData.features.split(',').map(f => f.trim())
+      features: typeof formData.features === 'string' ? formData.features.split(',').map(f => f.trim()) : formData.features
     };
 
     try {
       if (editingVehicle) {
-        await axios.put(`http://localhost:5000/api/vehicles/${editingVehicle._id}`, data, {
+        await axios.put(`${API_BASE_URL}/api/vehicles/${editingVehicle._id}`, data, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        await axios.post('http://localhost:5000/api/vehicles', data, {
+        await axios.post(`${API_BASE_URL}/api/vehicles`, data, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -86,7 +88,7 @@ const AdminVehicles = () => {
     if (window.confirm('Are you sure you want to delete this vehicle?')) {
       const token = localStorage.getItem('token');
       try {
-        await axios.delete(`http://localhost:5000/api/vehicles/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/vehicles/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchVehicles();
@@ -110,48 +112,72 @@ const AdminVehicles = () => {
     });
   };
 
-  if (loading) return <div>Loading fleet...</div>;
+  if (loading) return (
+    <div className="modern-loading-container">
+      <div className="loading-pulse"></div>
+      <p>Synchronizing Fleet Data...</p>
+    </div>
+  );
 
   return (
-    <div className="admin-tours-section">
-      <div className="section-header">
+    <div className="admin-fleet-section fade-in">
+      <div className="section-head mb-8">
         <div className="header-info">
-          <h2>Fleet <span className="text-gradient">Management</span></h2>
-          <p>Add and manage your adventure vehicles.</p>
+          <div className="title-with-subtitle">
+            <h2><Car size={24} className="text-primary" /> Fleet Management</h2>
+            <p>Maintain and deploy your high-performance adventure vehicles.</p>
+          </div>
         </div>
-        <button className="btn-modern-primary" onClick={() => { resetForm(); setEditingVehicle(null); setShowModal(true); }}>
-          <Plus size={20} /> Add Vehicle
+        <button className="btn-luxury-primary" onClick={() => { resetForm(); setEditingVehicle(null); setShowModal(true); }}>
+          <Plus size={20} /> Register Vehicle
         </button>
       </div>
 
-      <div className="tours-grid">
-        {vehicles.map((vehicle) => (
-          <div key={vehicle._id} className="tour-card admin-theme">
-            <div className="tour-card-image">
-              <img src={vehicle.image} alt={vehicle.name} />
-              <div className="tour-price-badge">${vehicle.pricePerDay}/day</div>
-            </div>
-            <div className="tour-card-content">
-              <h3>{vehicle.name}</h3>
-              <p className="tour-location">{vehicle.type}</p>
-              
-              <div className="tour-meta">
-                <div className="meta-item"><Users size={14} /> {vehicle.capacity} Seats</div>
-                <div className="meta-item"><Zap size={14} /> {vehicle.transmission}</div>
-                <div className="meta-item"><Fuel size={14} /> {vehicle.fuel}</div>
+      <div className="admin-content-grid" style={{ gridTemplateColumns: '1fr' }}>
+        <div className="tours-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '25px' }}>
+          {vehicles.map((vehicle) => (
+            <div key={vehicle._id} className="glass-panel tour-card admin-theme" style={{ padding: '0', overflow: 'hidden' }}>
+              <div className="tour-card-image" style={{ height: '220px', position: 'relative' }}>
+                <img src={vehicle.image} alt={vehicle.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div className="tour-price-badge" style={{ position: 'absolute', top: '15px', right: '15px', background: 'var(--primary)', padding: '5px 12px', borderRadius: '10px', fontWeight: '800', fontSize: '0.85rem' }}>
+                  ${vehicle.pricePerDay}<small>/day</small>
+                </div>
               </div>
+              <div className="tour-card-content" style={{ padding: '25px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                  <h3 style={{ fontSize: '1.25rem', color: 'white' }}>{vehicle.name}</h3>
+                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', background: 'rgba(255,255,255,0.05)', padding: '3px 8px', borderRadius: '5px', color: 'var(--primary)', fontWeight: '700' }}>
+                    {vehicle.type}
+                  </span>
+                </div>
+                
+                <div className="tour-meta" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+                  <div className="meta-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+                    <Users size={14} className="text-primary" /> {vehicle.capacity} Seats
+                  </div>
+                  <div className="meta-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+                    <Zap size={14} className="text-primary" /> {vehicle.transmission}
+                  </div>
+                  <div className="meta-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+                    <Fuel size={14} className="text-primary" /> {vehicle.fuel}
+                  </div>
+                  <div className="meta-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#888' }}>
+                    <Star size={14} className="text-primary" /> Featured
+                  </div>
+                </div>
 
-              <div className="admin-actions">
-                <button className="btn-edit" onClick={() => handleEdit(vehicle)}>
-                  <Edit2 size={16} /> Edit
-                </button>
-                <button className="btn-delete" onClick={() => handleDelete(vehicle._id)}>
-                  <Trash2 size={16} /> Delete
-                </button>
+                <div className="admin-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
+                  <button className="text-btn" onClick={() => handleEdit(vehicle)} style={{ justifyContent: 'center', gap: '8px' }}>
+                    <Edit2 size={16} /> Edit
+                  </button>
+                  <button className="text-btn danger" onClick={() => handleDelete(vehicle._id)} style={{ justifyContent: 'center', gap: '8px', color: '#ef4444' }}>
+                    <Trash2 size={16} /> Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {showModal && (

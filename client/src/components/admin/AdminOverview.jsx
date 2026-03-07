@@ -73,7 +73,7 @@ const AdminOverview = ({ bookings, tours, customers, setActiveTab, handleDeleteT
                 </tr>
               </thead>
               <tbody>
-                {bookings.slice(0, 6).map(b => (
+                {bookings.slice(0, 10).map(b => (
                   <tr key={b._id}>
                     <td>
                       <div className="user-cell">
@@ -86,15 +86,16 @@ const AdminOverview = ({ bookings, tours, customers, setActiveTab, handleDeleteT
                     </td>
                     <td>
                       <div className="tour-cell-info">
-                        <span className="tour-title">{b.tour?.title}</span>
+                        <span className="tour-title">{b.tour?.title || b.eventTitle || 'Special Event'}</span>
                         <span className="tour-date">{new Date(b.bookingDate).toLocaleDateString()}</span>
+                        <span className="booking-type-badge">{b.eventType || 'Tour'}</span>
                       </div>
                     </td>
                     <td>
-                      <span className="vehicle-name">{b.trip?.vehicle?.name || b.vehicle?.name || 'Standard'}</span>
+                      <span className="vehicle-name">{b.eventType === 'Tour' || b.eventType === 'Adventure' ? (b.trip?.vehicle?.name || b.vehicle?.name || 'Standard') : 'N/A'}</span>
                     </td>
                     <td>
-                      <span className="seat-pills">{b.selectedSeats?.join(', ') || 'N/A'}</span>
+                      <span className="seat-pills">{b.eventType === 'Tour' || b.eventType === 'Adventure' ? (b.selectedSeats?.join(', ') || 'N/A') : `${b.numberOfPeople} Tickets`}</span>
                     </td>
                     <td>
                       <select 

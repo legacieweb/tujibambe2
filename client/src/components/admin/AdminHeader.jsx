@@ -1,7 +1,7 @@
 import React from 'react';
-import { Search, Bell, Menu, X, Compass } from 'lucide-react';
+import { Search, Bell, Menu, X, Compass, LogOut } from 'lucide-react';
 
-const AdminHeader = ({ user, toggleSidebar, isSidebarOpen }) => {
+const AdminHeader = ({ user, toggleSidebar, isSidebarOpen, handleLogout }) => {
   return (
     <>
       <header className="mobile-dashboard-header">
@@ -9,9 +9,14 @@ const AdminHeader = ({ user, toggleSidebar, isSidebarOpen }) => {
           <Compass size={24} />
           <span>Tujibambe</span>
         </div>
-        <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
-          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <button onClick={handleLogout} className="logout-btn-header-mobile" style={{ background: 'transparent', border: 'none', color: '#ef4444' }}>
+            <LogOut size={20} />
+          </button>
+          <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
+            {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </header>
 
       <header className="main-content-header">
@@ -32,6 +37,9 @@ const AdminHeader = ({ user, toggleSidebar, isSidebarOpen }) => {
           <div className="header-user-mini">
             <div className="avatar-circle small">{user?.name?.charAt(0)}</div>
           </div>
+          <button onClick={handleLogout} className="icon-action-btn danger-hover" title="Logout" style={{ marginLeft: '10px' }}>
+            <LogOut size={20} />
+          </button>
         </div>
       </header>
     </>

@@ -16,18 +16,17 @@ const transporter = nodemailer.createTransport({
 
 exports.createBooking = async (req, res) => {
     try {
-        const { tour, bookingDate, numberOfPeople, totalPrice, selectedSeats, isCoordinator, vehicleId, tripId, paymentReference, currency } = req.body;
+        const { tour, eventTitle, eventType, bookingDate, numberOfPeople, totalPrice, selectedSeats, isCoordinator, vehicleId, tripId, paymentReference, currency } = req.body;
         
         // Verify payment if reference is provided
         if (paymentReference) {
-            // IyonicPay verification could be added here if an API endpoint exists
-            // For now, we'll proceed since Paystack is removed
+            // IyonicPay verification could be added here
         }
         
         let finalTripId = tripId;
 
         // If coordinator, create a Trip first
-        if (isCoordinator) {
+        if (isCoordinator && tour) {
             const inviteCode = crypto.randomBytes(4).toString('hex').toUpperCase();
             const newTrip = new Trip({
                 tour,
@@ -42,14 +41,16 @@ exports.createBooking = async (req, res) => {
 
         const booking = new Booking({
             user: req.user.id,
-            tour,
+            tour: (typeof tour === 'string' && tour.length === 24) ? tour : undefined,
+            eventTitle: eventTitle || (tour && typeof tour === 'string' && tour.length !== 24 ? tour : undefined),
+            eventType: eventType || 'Tour',
             trip: finalTripId,
             vehicle: vehicleId,
             bookingDate,
             numberOfPeople,
             totalPrice,
             currency: currency || 'USD',
-            selectedSeats,
+            selectedSeats: selectedSeats || [],
             isCoordinator: !!isCoordinator,
             paymentReference,
             paymentStatus: paymentReference ? 'completed' : 'pending',
@@ -57,10 +58,7 @@ exports.createBooking = async (req, res) => {
         });
         await booking.save();
 
-        // Send Email Notification (Nodemailer)
-        // ... (existing email logic)
-        
-        res.status(201).json({ booking, inviteCode: isCoordinator ? (await Trip.findById(finalTripId)).inviteCode : null });
+        res.status(201).json({ booking, inviteCode: (isCoordinator && finalTripId) ? (await Trip.findById(finalTripId))?.inviteCode : null });
     } catch (err) {
         console.error('Booking creation error:', err);
         res.status(500).json({ error: err.message });

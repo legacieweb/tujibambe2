@@ -31,7 +31,7 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-visual-side">
         <img 
-          src="https://images.unsplash.com/photo-1493246507139-91e8bef99c02?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          src="https://www.newsbharati.com/Encyc/2018/5/31/2_09_24_35_adventure_1_H@@IGHT_435_W@@IDTH_800.jpg" 
           alt="Travel Background" 
           className="auth-bg-image"
         />

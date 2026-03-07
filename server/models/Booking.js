@@ -7,7 +7,9 @@ require('./Vehicle');
 
 const bookingSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    tour: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
+    tour: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour' }, // Null if ticket only event
+    eventTitle: { type: String }, // For ticket-only events
+    eventType: { type: String, enum: ['Adventure', 'EpicFunTime', 'EventPlanning', 'Tour'], default: 'Tour' },
     trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }, // Link to a coordinator trip if any
     vehicle: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' },
     bookingDate: { type: Date, required: true },

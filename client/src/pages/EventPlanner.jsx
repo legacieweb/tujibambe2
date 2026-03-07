@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SEO from '../components/SEO';
 import { 
   Calendar, 
@@ -21,14 +21,20 @@ import {
   Compass,
   Layout,
   Layers,
-  PhoneCall
+  PhoneCall,
+  DollarSign,
+  Palette
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 import '../styles/Home.css';
 import '../styles/EventPlanner.css';
 import heroVideo from '../assets/184737-873923039_small.mp4';
 
 const EventPlanner = () => {
+  const navigate = useNavigate();
+  const packagesRef = useRef(null);
+
   const eventTypes = [
     {
       title: "Corporate Retreats",
@@ -134,19 +140,24 @@ const EventPlanner = () => {
                 alignItems: 'center',
                 animation: 'fadeInUp 1s ease-out 0.6s both'
               }}>
-                <a href="#contact-form" className="btn-luxury-primary" style={{ 
-                  background: '#f1c40f', 
-                  color: '#000', 
-                  borderRadius: '100px', 
-                  padding: '1.2rem 3rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  transition: 'all 0.3s ease'
-                }}>
+                <a 
+                  href="#services" 
+                  className="btn-luxury-primary" 
+                  style={{ 
+                    background: '#f1c40f', 
+                    color: '#000', 
+                    borderRadius: '100px', 
+                    padding: '1.2rem 3rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    fontWeight: '800',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                >
                   Start Planning <ArrowRight size={20} />
                 </a>
                 <a href="#services" className="btn-luxury-outline" style={{ 
@@ -166,86 +177,6 @@ const EventPlanner = () => {
               </div>
             </div>
           </div>
-
-          {/* Floating Stats Bar */}
-          <div className="hero-stats-floating" style={{ 
-            position: 'absolute',
-            right: '5%',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '40px',
-            zIndex: 5,
-            animation: 'fadeInRight 1s ease-out 0.8s both'
-          }}>
-            <div className="stat-item-vertical" style={{ textAlign: 'right' }}>
-              <div style={{ color: '#f1c40f', fontWeight: '900', fontSize: '2rem' }}>150+</div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Events</div>
-            </div>
-            <div className="stat-item-vertical" style={{ textAlign: 'right' }}>
-              <div style={{ color: '#f1c40f', fontWeight: '900', fontSize: '2rem' }}>12</div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Awards</div>
-            </div>
-            <div className="stat-item-vertical" style={{ textAlign: 'right' }}>
-              <div style={{ color: '#f1c40f', fontWeight: '900', fontSize: '2rem' }}>100%</div>
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Bespoke</div>
-            </div>
-          </div>
-
-          {/* Integrated Compact Inquiry Bar */}
-          <div className="hero-inquiry-bar-premium" style={{ 
-            position: 'absolute', 
-            bottom: '60px', 
-            width: '100%', 
-            left: 0, 
-            padding: '0 5%',
-            animation: 'fadeInUp 1s ease-out 1s both'
-          }}>
-            <div className="glass-inquiry-container" style={{ 
-              maxWidth: '1200px', 
-              margin: '0 auto', 
-              background: 'rgba(255, 255, 255, 0.02)', 
-              backdropFilter: 'blur(25px)', 
-              borderRadius: '24px', 
-              padding: '12px', 
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              boxShadow: '0 40px 100px rgba(0,0,0,0.5)'
-            }}>
-              <div className="inquiry-fields" style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', padding: '0 20px' }}>
-                <div className="field-group-premium" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(241,196,15,0.8)', fontWeight: '800' }}>Event Style</span>
-                  <select style={{ background: 'none', border: 'none', color: 'white', fontWeight: '600', fontSize: '0.95rem', outline: 'none', cursor: 'pointer' }}>
-                    <option style={{background: '#111'}}>Corporate Retreat</option>
-                    <option style={{background: '#111'}}>Wilderness Wedding</option>
-                    <option style={{background: '#111'}}>Private Celebration</option>
-                  </select>
-                </div>
-                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '30px', margin: 'auto' }}></div>
-                <div className="field-group-premium" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(241,196,15,0.8)', fontWeight: '800' }}>Guest Count</span>
-                  <input type="text" placeholder="Approx. Number?" style={{ background: 'none', border: 'none', color: 'white', fontWeight: '600', fontSize: '0.95rem', outline: 'none', width: '100%' }} />
-                </div>
-              </div>
-              <button className="inquiry-submit-premium" style={{ 
-                background: '#f1c40f', 
-                color: '#000', 
-                border: 'none', 
-                padding: '16px 40px', 
-                borderRadius: '16px', 
-                fontWeight: '900', 
-                textTransform: 'uppercase', 
-                letterSpacing: '1px',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-              }}>
-                Check Availability
-              </button>
-            </div>
-          </div>
           
           {/* Refined Scroll Indicator */}
           <div className="scroll-indicator-minimal" style={{ 
@@ -262,7 +193,7 @@ const EventPlanner = () => {
       </section>
 
       {/* Signature Event Styles Section */}
-      <section id="services" className="signature-services" style={{ padding: '150px 10%', background: '#0a0a0a', position: 'relative', overflow: 'hidden' }}>
+      <section id="services" ref={packagesRef} className="signature-services" style={{ padding: '150px 10%', background: '#0a0a0a', position: 'relative', overflow: 'hidden' }}>
         <div className="bg-compass" style={{ position: 'absolute', top: '0', right: '0', opacity: '0.05' }}>
           <Compass size={500} strokeWidth={0.5} color="#f1c40f" />
         </div>
@@ -274,25 +205,45 @@ const EventPlanner = () => {
         
         <div className="event-types-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px' }}>
           {eventTypes.map((event, index) => (
-            <div key={index} className="event-card" style={{ 
-              background: 'rgba(255,255,255,0.02)', 
-              borderRadius: '30px', 
-              overflow: 'hidden', 
-              border: '1px solid rgba(255,255,255,0.05)',
-              transition: 'all 0.4s ease'
-            }}>
+            <div 
+              key={index} 
+              className="event-card"
+              style={{ 
+                background: 'rgba(255,255,255,0.02)', 
+                borderRadius: '30px', 
+                overflow: 'hidden', 
+                border: '1px solid rgba(255,255,255,0.05)',
+                transition: 'all 0.4s ease',
+                cursor: 'pointer',
+                position: 'relative'
+              }}
+            >
               <div className="card-image-wrapper" style={{ height: '300px', overflow: 'hidden', position: 'relative' }}>
                 <img src={event.image} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }} />
-                <div className="card-icon-badge" style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', padding: '10px', borderRadius: '15px' }}>
+                <div className="card-icon-badge" style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', padding: '10px', borderRadius: '15px', color: '#fff' }}>
                   {event.icon}
                 </div>
               </div>
               <div className="card-content" style={{ padding: '40px' }}>
                 <h3 style={{ fontSize: '1.8rem', marginBottom: '20px', color: '#f1c40f' }}>{event.title}</h3>
                 <p style={{ color: '#aaa', lineHeight: '1.8', marginBottom: '30px', fontSize: '1.1rem' }}>{event.description}</p>
-                <Link to="/contact" style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'white', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.9rem' }}>
-                  Explore Theme <ChevronRight size={18} color="#f1c40f" />
-                </Link>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Link 
+                    to={event.title.includes('Corporate') ? '/event-planner/corporate' : event.title.includes('Wedding') ? '/event-planner/weddings' : '/event-planner/parties'}
+                    style={{ 
+                      color: 'white', 
+                      fontSize: '0.9rem', 
+                      fontWeight: '700', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '2px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px'
+                    }}
+                  >
+                    Explore Theme <ChevronRight size={18} color="#f1c40f" />
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
@@ -408,7 +359,10 @@ const EventPlanner = () => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <label style={{ fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', color: '#777' }}>Event Category</label>
-              <select style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '18px', borderRadius: '15px', color: 'white', fontSize: '1rem', appearance: 'none' }}>
+              <select 
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '18px', borderRadius: '15px', color: 'white', fontSize: '1rem', appearance: 'none' }}
+              >
+                <option value="" disabled selected>Select a Category</option>
                 <option value="corporate">Corporate Strategic Retreat</option>
                 <option value="wedding">Wilderness Destination Wedding</option>
                 <option value="private">Private Elite Celebration</option>
@@ -419,8 +373,21 @@ const EventPlanner = () => {
               <label style={{ fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', color: '#777' }}>Brief vision description</label>
               <textarea style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '18px', borderRadius: '15px', color: 'white', fontSize: '1rem', resize: 'none' }} rows="4" placeholder="Share your initial thoughts..."></textarea>
             </div>
-            <button type="submit" className="btn-modern-primary" style={{ background: '#f1c40f', color: '#000', width: '100%', border: 'none', justifyContent: 'center' }}>
-              <span className="btn-text" style={{ fontWeight: '900' }}>Submit Inquiry</span>
+            <button 
+              type="submit" 
+              className="btn-modern-primary" 
+              style={{ 
+                background: '#f1c40f', 
+                color: '#000', 
+                width: '100%', 
+                border: 'none', 
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <span className="btn-text" style={{ fontWeight: '900' }}>
+                Submit Inquiry
+              </span>
               <span className="btn-icon" style={{ background: 'rgba(0,0,0,0.1)' }}><ArrowRight size={20} /></span>
             </button>
           </form>

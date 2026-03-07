@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const signup = async (userData) => {
-        const res = await axios.post('https://tujibambe2.onrender.com/api/auth/signup', userData);
+        const res = await axios.post(`${API_BASE_URL}/api/auth/signup`, userData);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         setUser(res.data.user);
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = async (userData) => {
-        const res = await axios.post('https://tujibambe2.onrender.com/api/auth/login', userData);
+        const res = await axios.post(`${API_BASE_URL}/api/auth/login`, userData);
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         setUser(res.data.user);

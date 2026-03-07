@@ -11,10 +11,15 @@ import AdminFinancials from '../components/admin/AdminFinancials';
 import AdminSystem from '../components/admin/AdminSystem';
 import AdminVehicles from '../components/admin/AdminVehicles';
 import AdminCarBookings from '../components/admin/AdminCarBookings';
+import AdminEpicFunTimes from '../components/admin/AdminEpicFunTimes';
+import AdminEventPlanning from '../components/admin/AdminEventPlanning';
+import AdminInquiries from '../components/admin/AdminInquiries';
 import '../styles/Dashboard.css';
 
 const AdminDashboard = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, loading: authLoading } = useContext(AuthContext);
+  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
+  
   const [bookings, setBookings] = useState([]);
   const [tours, setTours] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -25,13 +30,19 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('token');
         const [bookingsRes, toursRes] = await Promise.all([
-          axios.get('https://tujibambe2.onrender.com/api/bookings/all', {
+          axios.get(`${API_BASE_URL}/api/bookings/all`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get('https://tujibambe2.onrender.com/api/tours')
+          axios.get(`${API_BASE_URL}/api/tours`)
         ]);
         setBookings(bookingsRes.data);
         setTours(toursRes.data);
@@ -69,7 +80,7 @@ const AdminDashboard = () => {
     if (window.confirm('Are you sure you want to delete this tour?')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`https://tujibambe2.onrender.com/api/tours/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/tours/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTours(tours.filter(t => t._id !== id));
@@ -84,7 +95,7 @@ const AdminDashboard = () => {
     if (window.confirm('Are you sure you want to delete this booking?')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`https://tujibambe2.onrender.com/api/bookings/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/bookings/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(bookings.filter(b => b._id !== id));
@@ -98,7 +109,7 @@ const AdminDashboard = () => {
   const handleUpdateBookingStatus = async (id, status) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.put(`https://tujibambe2.onrender.com/api/bookings/${id}`, { status }, {
+      const res = await axios.put(`${API_BASE_URL}/api/bookings/${id}`, { status }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setBookings(bookings.map(b => b._id === id ? { ...b, status: res.data.status } : b));
@@ -107,6 +118,22 @@ const AdminDashboard = () => {
       alert('Failed to update status');
     }
   };
+
+  if (authLoading) return (
+    <div className="modern-loading-container full-page">
+      <div className="loading-pulse"></div>
+      <p>Verifying Credentials...</p>
+    </div>
+  );
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <div className="modern-loading-container full-page">
+        <div className="loading-pulse"></div>
+        <p>Unauthorized Access. Redirecting...</p>
+      </div>
+    );
+  }
 
   if (loading) return (
     <div className="modern-loading-container full-page">
@@ -131,6 +158,7 @@ const AdminDashboard = () => {
           user={user} 
           toggleSidebar={toggleSidebar} 
           isSidebarOpen={isSidebarOpen} 
+          handleLogout={handleLogout}
         />
 
         <div className="dashboard-scrollable-content">
@@ -146,9 +174,12 @@ const AdminDashboard = () => {
             />
           )}
           {activeTab === 'tours' && <AdminTours tours={tours} handleDeleteTour={handleDeleteTour} />}
+          {activeTab === 'epic-fun-times' && <AdminEpicFunTimes bookings={bookings.filter(b => b.eventType === 'EpicFunTime')} handleDeleteBooking={handleDeleteBooking} handleUpdateBookingStatus={handleUpdateBookingStatus} />}
+          {activeTab === 'event-planning' && <AdminEventPlanning bookings={bookings.filter(b => b.eventType === 'EventPlanning')} handleDeleteBooking={handleDeleteBooking} handleUpdateBookingStatus={handleUpdateBookingStatus} />}
           {activeTab === 'vehicles' && <AdminVehicles />}
           {activeTab === 'car-bookings' && <AdminCarBookings />}
           {activeTab === 'customers' && <AdminCustomers customers={customers} bookings={bookings} />}
+          {activeTab === 'inquiries' && <AdminInquiries />}
           {activeTab === 'financials' && (
             <AdminFinancials 
               bookings={bookings} 

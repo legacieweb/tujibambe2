@@ -19,11 +19,13 @@ import {
   X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 import '../styles/Home.css';
 import '../styles/Tours.css'; // Reusing some styles
 import '../styles/CarHire.css';
 
 const CarHire = () => {
+  const { formatPrice, currency } = useCurrency();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,7 +93,7 @@ const CarHire = () => {
         vehicle: selectedVehicle._id,
         ...bookingData,
         totalPrice,
-        currency: 'USD'
+        currency
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -166,7 +168,7 @@ const CarHire = () => {
                   <div className="vehicle-image">
                     <img src={vehicle.image} alt={vehicle.name} />
                     <div className="vehicle-price-tag">
-                      <span className="amount">${vehicle.pricePerDay}</span>
+                      <span className="amount">{formatPrice(vehicle.pricePerDay)}</span>
                       <span className="period">/ day</span>
                     </div>
                   </div>
@@ -296,7 +298,7 @@ const CarHire = () => {
                   <div className="booking-summary-card">
                     <div className="summary-row">
                       <span>Rate per day</span>
-                      <span>${selectedVehicle.pricePerDay}</span>
+                      <span>{formatPrice(selectedVehicle.pricePerDay)}</span>
                     </div>
                     <div className="summary-row">
                       <span>Duration</span>
@@ -305,7 +307,7 @@ const CarHire = () => {
                     <div className="summary-divider"></div>
                     <div className="summary-row total">
                       <span>Total Price</span>
-                      <span className="text-gradient">${totalPrice}</span>
+                      <span className="text-gradient">{formatPrice(totalPrice)}</span>
                     </div>
                   </div>
 

@@ -29,7 +29,7 @@ const Signup = () => {
     <div className="auth-page">
       <div className="auth-visual-side">
         <img 
-          src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          src="https://img.freepik.com/free-photo/backpacker-standing-sunrise-viewpoint-ja-bo-village-mae-hong-son-province-thailand_335224-1356.jpg?semt=ais_rp_50_assets&w=740&q=80" 
           alt="Adventure Background" 
           className="auth-bg-image"
         />

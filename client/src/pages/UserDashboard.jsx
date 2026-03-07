@@ -8,6 +8,7 @@ import UserOverview from '../components/user/UserOverview';
 import UserProfile from '../components/user/UserProfile';
 import UserSettings from '../components/user/UserSettings';
 import UserCarBookings from '../components/user/UserCarBookings';
+import UserEventPlanning from '../components/user/UserEventPlanning';
 import '../styles/UserDashboard.css';
 
 const UserDashboard = () => {
@@ -19,6 +20,13 @@ const UserDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for tab in query params
+    const queryParams = new URLSearchParams(window.location.search);
+    const tabParam = queryParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+    
     const handleSwitchTab = (e) => setActiveTab(e.detail);
     window.addEventListener('switchTab', handleSwitchTab);
     return () => window.removeEventListener('switchTab', handleSwitchTab);
@@ -79,6 +87,7 @@ const UserDashboard = () => {
         <div className="dashboard-scrollable-content user-theme">
           {activeTab === 'dashboard' && <UserOverview bookings={bookings} />}
           {activeTab === 'car-bookings' && <UserCarBookings />}
+          {activeTab === 'event-planning' && <UserEventPlanning />}
           {activeTab === 'profile' && <UserProfile user={user} bookings={bookings} />}
           {activeTab === 'settings' && <UserSettings />}
         </div>

@@ -97,6 +97,10 @@ const BookingDetails = () => {
     </div>
   );
 
+  const isTour = booking.eventType === 'Tour' || !booking.eventType;
+  const isEvent = booking.eventType === 'EventPlanning';
+  const isEpic = booking.eventType === 'EpicFunTime';
+
   return (
     <div className="premium-details-page fade-in">
       <div className="details-header-nav">
@@ -114,11 +118,11 @@ const BookingDetails = () => {
           <div className="main-hero-card">
             <img 
               src={booking.tour?.photo || booking.tour?.image || 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'} 
-              alt={booking.tour?.title} 
+              alt={booking.tour?.title || booking.eventTitle} 
             />
             <div className="hero-content">
-              <h1>{booking.tour?.title}</h1>
-              <div className="loc-badge"><MapPin size={14} /> {booking.tour?.location}</div>
+              <h1>{booking.tour?.title || booking.eventTitle}</h1>
+              <div className="loc-badge"><MapPin size={14} /> {booking.tour?.location || 'Nairobi, Kenya'}</div>
             </div>
           </div>
 
@@ -126,21 +130,21 @@ const BookingDetails = () => {
             <div className="ov-card">
               <Calendar size={20} className="ov-icon" />
               <div>
-                <label>Departure</label>
+                <label>{isEvent ? 'Planned Date' : 'Departure'}</label>
                 <span>{new Date(booking.bookingDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
             </div>
             <div className="ov-card">
               <Users size={20} className="ov-icon" />
               <div>
-                <label>Travelers</label>
+                <label>{isTour ? 'Travelers' : 'Guests'}</label>
                 <span>{booking.numberOfPeople} Guest{booking.numberOfPeople > 1 ? 's' : ''}</span>
               </div>
             </div>
             <div className="ov-card">
               <CreditCard size={20} className="ov-icon" />
               <div>
-                <label>Total Paid</label>
+                <label>Total Budget</label>
                 <span>{booking.currency === 'KES' ? 'KSh' : '$'}{(booking.totalPrice || 0).toLocaleString()}</span>
               </div>
             </div>
@@ -148,41 +152,60 @@ const BookingDetails = () => {
 
           <div className="details-card-modern">
             <div className="card-head">
-              <h2>Adventure Overview</h2>
+              <h2>{isTour ? 'Adventure Overview' : isEpic ? 'Party Details' : 'Planning Overview'}</h2>
               <ShieldCheck size={20} color="#c2912e" />
             </div>
-            <p className="description-text">{booking.tour?.description}</p>
+            <p className="description-text">
+              {booking.tour?.description || `Booking for ${booking.eventTitle}. This is a confirmed elite event experience managed by Tujibambe.`}
+            </p>
             
             <div className="perks-row">
-              {booking.tour?.isAllInclusive && (
+              {(booking.tour?.isAllInclusive || isEpic) && (
                 <div className="perk"><Ticket size={14} /> All-Inclusive</div>
               )}
-              <div className="perk"><CheckCircle size={14} /> Confirmed</div>
+              <div className="perk"><CheckCircle size={14} /> {booking.status.toUpperCase()}</div>
             </div>
           </div>
         </div>
 
         <div className="layout-controls">
-          <div className="vehicle-management-card">
-            <div className="card-head">
-              <h3><Armchair size={18} /> Seat Selection</h3>
-              <div className="v-badge-minimal">{booking.trip?.vehicle?.name || 'Safari Cruiser'}</div>
-            </div>
-            
-            <SeatLayout 
-              seats={booking.selectedSeats} 
-              capacity={booking.trip?.vehicle?.capacity || 8}
-              bookedSeats={booking.trip?.bookedSeats}
-            />
+          {isTour ? (
+            <div className="vehicle-management-card">
+              <div className="card-head">
+                <h3><Armchair size={18} /> Seat Selection</h3>
+                <div className="v-badge-minimal">{booking.trip?.vehicle?.name || 'Safari Cruiser'}</div>
+              </div>
+              
+              <SeatLayout 
+                seats={booking.selectedSeats} 
+                capacity={booking.trip?.vehicle?.capacity || 8}
+                bookedSeats={booking.trip?.bookedSeats}
+              />
 
-            <div className="minimal-legend">
-              <div className="leg-item"><div className="dot user" /> Reserved</div>
-              <div className="leg-item"><div className="dot booked" /> Occupied</div>
-              <div className="leg-item"><div className="dot available" /> Available</div>
+              <div className="minimal-legend">
+                <div className="leg-item"><div className="dot user" /> Reserved</div>
+                <div className="leg-item"><div className="dot booked" /> Occupied</div>
+                <div className="leg-item"><div className="dot available" /> Available</div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="event-ticket-card elite-glass">
+              <div className="card-head">
+                <h3><Ticket size={18} /> {isEpic ? 'Entry Pass' : 'Planning Status'}</h3>
+                <div className="v-badge-minimal">CONFIRMED</div>
+              </div>
+              <div className="ticket-visual-mini">
+                <Ticket size={48} color="#c2912e" />
+                <div className="ticket-info-mini">
+                  <strong>{booking.numberOfPeople} Ticket{booking.numberOfPeople > 1 ? 's' : ''}</strong>
+                  <span>Serial: #{booking._id.slice(-8).toUpperCase()}</span>
+                </div>
+              </div>
+              <p className="ticket-hint">Present this QR/Reference code at the venue or during consultation.</p>
+            </div>
+          )}
 
-          {booking.trip && (
+          {booking.trip && isTour && (
             <div className="invite-management-card">
               <div className="card-head">
                 <h3><Share2 size={18} /> Group Invitation</h3>

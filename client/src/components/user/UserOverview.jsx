@@ -84,16 +84,32 @@ const UserOverview = ({ bookings }) => {
                   </div>
                   <div className="trip-details-elite">
                     <div className="trip-header-row">
-                      <h3>{booking.tour?.title || 'Tour details unavailable'}</h3>
+                      <h3>{booking.tour?.title || booking.eventTitle || 'Event details unavailable'}</h3>
                       <div className="trip-price-tag">
                         {booking.currency === 'KES' ? 'KSh' : '$'}{(booking.totalPrice || 0).toLocaleString()}
                       </div>
                     </div>
-                    <p className="trip-description-short">{booking.tour?.description?.substring(0, 100)}...</p>
+                    <div className="eventType-badge" style={{ 
+                      display: 'inline-block', 
+                      background: booking.eventType === 'EpicFunTime' ? '#ff5e00' : 
+                                 booking.eventType === 'EventPlanning' ? '#f1c40f' : 'rgba(255,255,255,0.1)',
+                      color: booking.eventType === 'EventPlanning' ? 'black' : 'white',
+                      fontSize: '0.6rem',
+                      fontWeight: '800',
+                      padding: '2px 8px',
+                      borderRadius: '50px',
+                      marginBottom: '8px',
+                      textTransform: 'uppercase'
+                    }}>
+                      {booking.eventType || 'Tour'}
+                    </div>
+                    <p className="trip-description-short">
+                      {booking.tour?.description?.substring(0, 100) || 'Special event booking. Check your email for more details.'}...
+                    </p>
                     <div className="trip-meta-tags">
                       <div className="meta-tag"><Calendar size={14} /> {new Date(booking.bookingDate).toLocaleDateString()}</div>
                       <div className="meta-tag"><Users size={14} /> {booking.numberOfPeople} traveler{booking.numberOfPeople > 1 ? 's' : ''}</div>
-                      <div className="meta-tag"><MapPin size={14} /> {booking.tour?.location || 'Location pending'}</div>
+                      <div className="meta-tag"><MapPin size={14} /> {booking.tour?.location || 'Nairobi, Kenya'}</div>
                     </div>
                     <div className="trip-footer-actions">
                       <button className="btn-details-link">Manage Booking <ChevronRight size={16} /></button>

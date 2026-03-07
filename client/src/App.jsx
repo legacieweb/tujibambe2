@@ -13,10 +13,16 @@ import Signup from './pages/Signup';
 import UserDashboard from './pages/UserDashboard';
 import BookingDetails from './pages/BookingDetails';
 import BookingPage from './pages/BookingPage';
+import TicketBookingPage from './pages/TicketBookingPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminTourForm from './pages/AdminTourForm';
 import AdminBookingDetails from './pages/AdminBookingDetails';
-import Navbar from './components/Navbar';
+import Adventures from './pages/Adventures_New';
+import EpicFunTimes from './pages/EpicFunTimes_New';
+import CorporateRetreats from './pages/CorporateRetreats';
+import WildBushWeddings from './pages/WildBushWeddings';
+import PrivateParties from './pages/PrivateParties';
+import Navbar from './components/Navbar_New';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import CurrencyPopup from './components/CurrencyPopup';
@@ -44,13 +50,18 @@ function App() {
           <Route path="/tours" element={<MainLayout><Tours /></MainLayout>} />
           <Route path="/tours/:id" element={<MainLayout><TourDetails /></MainLayout>} />
           <Route path="/book/:id" element={<MainLayout><BookingPage /></MainLayout>} />
+          <Route path="/book-ticket/:type" element={<MainLayout><TicketBookingPage /></MainLayout>} />
           <Route path="/about" element={<MainLayout><AboutUs /></MainLayout>} />
           <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
           <Route path="/car-hire" element={<MainLayout><CarHire /></MainLayout>} />
           <Route path="/event-planner" element={<MainLayout><EventPlanner /></MainLayout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          
+          <Route path="/adventures" element={<MainLayout><Adventures /></MainLayout>} />
+          <Route path="/epic-fun-times" element={<MainLayout><EpicFunTimes /></MainLayout>} />
+          <Route path="/event-planner/corporate" element={<MainLayout><CorporateRetreats /></MainLayout>} />
+          <Route path="/event-planner/weddings" element={<MainLayout><WildBushWeddings /></MainLayout>} />
+          <Route path="/event-planner/parties" element={<MainLayout><PrivateParties /></MainLayout>} />
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/dashboard/booking/:id" element={<BookingDetails />} />
           <Route path="/admin" element={<AdminDashboard />} />

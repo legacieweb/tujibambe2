@@ -32,11 +32,6 @@ const Tours = () => {
   const [sortBy, setSortBy] = useState('name');
   const [favorites, setFavorites] = useState(new Set());
   const [showFilters, setShowFilters] = useState(false);
-  const [heroStats, setHeroStats] = useState({
-    totalTours: 0,
-    totalDestinations: 0,
-    totalReviews: 0
-  });
 
   // Fetch tours data
   useEffect(() => {
@@ -51,7 +46,7 @@ const Tours = () => {
             return { ...tour, image: "https://www.trafordsafaris.com/wp-content/uploads/2025/04/masai-mara-safari.jpeg" };
           }
           if (title.includes('amboseli')) {
-            return { ...tour, image: "https://www.amboselikenyasafaris.com/wp-content/uploads/2024/02/GIRAFFES-IN-AMBOSELI-750x450.jpg" };
+            return { ...tour, image: "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg" };
           }
           if (title.includes('mount kenya')) {
             return { ...tour, image: "https://worldexpeditions.com/croppedimages/Africa/Kenya/mt-kenya-6875402-1100px.jpg?1753676995" };
@@ -64,16 +59,6 @@ const Tours = () => {
 
         setTours(updatedTours);
         setFilteredTours(updatedTours);
-
-        // Calculate hero stats
-        const destinations = new Set(updatedTours.map(tour => tour.location || 'Unknown')).size;
-        const reviews = updatedTours.reduce((sum, tour) => sum + (tour.reviews || 0), 0);
-
-        setHeroStats({
-          totalTours: updatedTours.length,
-          totalDestinations: destinations,
-          totalReviews: reviews
-        });
       } catch (error) {
         console.error('Error fetching tours:', error);
       } finally {
@@ -172,114 +157,73 @@ const Tours = () => {
         </div>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">Explore Our Tours</h1>
-          <p className="hero-subtitle">Discover the magic of Kenya through our hand-picked adventure experiences.</p>
+          <h1 className="hero-title">Tujibambe <span className="text-gradient">Safaris</span></h1>
+          <p className="hero-subtitle">Your Journey, Our Passion. Experience the wild like never before with our curated adventure packages.</p>
 
         </div>
       </section>
 
       <div className="tours-container">
         {/* Advanced Filter Bar */}
-        <div className="filter-bar">
-          <div className="search-section">
-            <div className="search-box">
-              <Search size={20} color="#888" />
-              <input
-                type="text"
-                placeholder="Search tours, destinations, or experiences..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button className="clear-search" onClick={() => setSearchTerm('')}>
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-
+        <div className="filter-bar-redesign">
+          <div className="search-box-redesign">
+            <Search className="search-icon" size={22} />
+            <input
+              type="text"
+              placeholder="Where do you want to go?"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
             <button
-              className="filter-toggle"
+              className={`filter-btn-toggle ${showFilters ? 'active' : ''}`}
               onClick={() => setShowFilters(!showFilters)}
             >
-              <Filter size={18} />
-              Advanced Filters
-              <ChevronDown className={showFilters ? 'rotated' : ''} size={16} />
+              <Filter size={20} />
+              <span>Filters</span>
             </button>
           </div>
 
           {showFilters && (
-            <div className="advanced-filters">
-              <div className="filter-group">
-                <label>Category</label>
-                <div className="category-filters-wrapper">
-                  <div className="category-filters">
-                    {categories.map(category => (
-                      <button
-                        key={category}
-                        className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                      </button>
+            <div className="filters-expanded">
+              <div className="filter-grid">
+                <div className="filter-item">
+                  <label>Category</label>
+                  <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
                     ))}
+                  </select>
+                </div>
+
+                <div className="filter-item">
+                  <label>Price Range</label>
+                  <div className="price-inputs">
+                    <span>{formatPrice(priceRange[0])}</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="5000"
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                    />
+                    <span>{formatPrice(priceRange[1])}</span>
                   </div>
                 </div>
-              </div>
 
-              <div className="filter-group">
-                <label>Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}</label>
-                <div className="price-slider">
-                  <input
-                    type="range"
-                    min="0"
-                    max="5000"
-                    value={priceRange[0]}
-                    onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="5000"
-                    value={priceRange[1]}
-                    onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                  />
+                <div className="filter-item">
+                  <label>Sort By</label>
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="price-low">Price (Low to High)</option>
+                    <option value="price-high">Price (High to Low)</option>
+                    <option value="rating">Rating</option>
+                  </select>
                 </div>
               </div>
-
-              <div className="filter-group">
-                <label>Minimum Rating</label>
-                <div className="rating-filters">
-                  {[0, 3, 4, 4.5, 5].map(rating => (
-                    <button
-                      key={rating}
-                      className={`rating-btn ${selectedRating === rating ? 'active' : ''}`}
-                      onClick={() => setSelectedRating(rating)}
-                    >
-                      {rating === 0 ? 'All' : (
-                        <>
-                          <Star size={14} fill="currentColor" />
-                          {rating}+
-                        </>
-                      )}
-                    </button>
-                  ))}
-                </div>
+              
+              <div className="filter-actions">
+                <button className="reset-btn" onClick={clearFilters}>Reset All</button>
               </div>
-
-              <div className="filter-group">
-                <label>Sort By</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="name">Name (A-Z)</option>
-                  <option value="price-low">Price (Low to High)</option>
-                  <option value="price-high">Price (High to Low)</option>
-                  <option value="rating">Rating</option>
-                  <option value="duration">Duration</option>
-                </select>
-              </div>
-
-              <button className="clear-filters-btn" onClick={clearFilters}>
-                Clear All Filters
-              </button>
             </div>
           )}
         </div>

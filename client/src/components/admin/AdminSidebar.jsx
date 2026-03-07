@@ -2,16 +2,19 @@ import React from 'react';
 import { 
   LayoutDashboard, Users, Map, Settings, 
   DollarSign, LogOut, Compass, X, Shield,
-  Car, Calendar
+  Car, Calendar, Zap, Sparkles, Mail
 } from 'lucide-react';
 
 const AdminSidebar = ({ activeTab, setActiveTab, isSidebarOpen, setIsSidebarOpen, user, handleLogout }) => {
   const navItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'tours', label: 'Manage Tours', icon: Map },
+    { id: 'epic-fun-times', label: 'Epic Fun Times', icon: Zap },
+    { id: 'event-planning', label: 'Event Planning', icon: Sparkles },
     { id: 'vehicles', label: 'Manage Fleet', icon: Car },
     { id: 'car-bookings', label: 'Car Hires', icon: Calendar },
     { id: 'customers', label: 'Customers', icon: Users },
+    { id: 'inquiries', label: 'Inquiries', icon: Mail },
     { id: 'financials', label: 'Financials', icon: DollarSign },
     { id: 'system', label: 'System', icon: Settings },
   ];

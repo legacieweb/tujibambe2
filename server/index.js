@@ -23,6 +23,8 @@ require('./models/Vehicle');
 require('./models/Trip');
 require('./models/Booking');
 require('./models/CarBooking');
+require('./models/Inquiry');
+require('./models/Subscriber');
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -30,6 +32,7 @@ app.use('/api/tours', require('./routes/tours'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/vehicles', require('./routes/vehicles'));
 app.use('/api/car-bookings', require('./routes/carBookings'));
+app.use('/api/contact', require('./routes/contact'));
 
 // Redirect local IyonicPay requests directly to the production service
 app.get('/request', (req, res) => {
