@@ -11,7 +11,11 @@ import {
   Search,
   Users,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Trash2,
+  Download,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
@@ -22,6 +26,7 @@ const AdminInquiries = () => {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState('inquiries'); // 'inquiries' or 'subscribers'
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSubscribers, setSelectedSubscribers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +61,85 @@ const AdminInquiries = () => {
     } catch (err) {
       console.error('Error updating status:', err);
     }
+  };
+
+  const deleteInquiry = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this inquiry?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      await axios.delete(`${API_BASE_URL}/api/contact/inquiry/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInquiries(inquiries.filter(inq => inq._id !== id));
+    } catch (err) {
+      console.error('Error deleting inquiry:', err);
+    }
+  };
+
+  const deleteSubscriber = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this subscriber?')) return;
+    const token = localStorage.getItem('token');
+    try {
+      await axios.delete(`${API_BASE_URL}/api/contact/subscriber/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSubscribers(subscribers.filter(sub => sub._id !== id));
+      setSelectedSubscribers(selectedSubscribers.filter(sid => sid !== id));
+    } catch (err) {
+      console.error('Error deleting subscriber:', err);
+    }
+  };
+
+  const bulkDeleteSubscribers = async () => {
+    if (selectedSubscribers.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedSubscribers.length} subscribers?`)) return;
+    
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(`${API_BASE_URL}/api/contact/subscribers/bulk-delete`, { ids: selectedSubscribers }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSubscribers(subscribers.filter(sub => !selectedSubscribers.includes(sub._id)));
+      setSelectedSubscribers([]);
+    } catch (err) {
+      console.error('Error bulk deleting subscribers:', err);
+    }
+  };
+
+  const toggleSubscriberSelection = (id) => {
+    if (selectedSubscribers.includes(id)) {
+      setSelectedSubscribers(selectedSubscribers.filter(sid => sid !== id));
+    } else {
+      setSelectedSubscribers([...selectedSubscribers, id]);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedSubscribers.length === filteredSubscribers.length) {
+      setSelectedSubscribers([]);
+    } else {
+      setSelectedSubscribers(filteredSubscribers.map(sub => sub._id));
+    }
+  };
+
+  const exportSubscribersCSV = () => {
+    const headers = ['Email', 'Subscription Date', 'Status'];
+    const data = filteredSubscribers.map(sub => [
+      sub.email,
+      new Date(sub.subscribedAt).toLocaleDateString(),
+      sub.isActive ? 'Active' : 'Unsubscribed'
+    ]);
+    
+    const csvContent = [headers, ...data].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filteredInquiries = inquiries.filter(inq => 
@@ -109,6 +193,26 @@ const AdminInquiries = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        
+        {activeView === 'subscribers' && (
+          <div className="admin-actions-group">
+            <button 
+              className="btn-action-modern export" 
+              onClick={exportSubscribersCSV}
+              disabled={filteredSubscribers.length === 0}
+            >
+              <Download size={18} /> Export CSV
+            </button>
+            {selectedSubscribers.length > 0 && (
+              <button 
+                className="btn-action-modern delete-bulk" 
+                onClick={bulkDeleteSubscribers}
+              >
+                <Trash2 size={18} /> Delete Selected ({selectedSubscribers.length})
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {activeView === 'inquiries' ? (
@@ -174,6 +278,9 @@ const AdminInquiries = () => {
                           <a href={`mailto:${inq.email}?subject=RE: ${inq.subject}`} className="btn-icon-modern email" title="Reply via Email">
                             <ExternalLink size={16} />
                           </a>
+                          <button onClick={() => deleteInquiry(inq._id)} className="btn-icon-modern delete" title="Delete Inquiry">
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -195,14 +302,33 @@ const AdminInquiries = () => {
               <table className="admin-modern-table">
                 <thead>
                   <tr>
+                    <th className="checkbox-col">
+                      <button className="btn-check-all" onClick={toggleSelectAll}>
+                        {selectedSubscribers.length === filteredSubscribers.length && filteredSubscribers.length > 0 ? (
+                          <CheckSquare size={18} className="text-orange" />
+                        ) : (
+                          <Square size={18} />
+                        )}
+                      </button>
+                    </th>
                     <th>Subscription Date</th>
                     <th>Email Address</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredSubscribers.map(sub => (
-                    <tr key={sub._id}>
+                    <tr key={sub._id} className={selectedSubscribers.includes(sub._id) ? 'selected' : ''}>
+                      <td className="checkbox-col">
+                        <button className="btn-check" onClick={() => toggleSubscriberSelection(sub._id)}>
+                          {selectedSubscribers.includes(sub._id) ? (
+                            <CheckSquare size={18} className="text-orange" />
+                          ) : (
+                            <Square size={18} />
+                          )}
+                        </button>
+                      </td>
                       <td>{new Date(sub.subscribedAt).toLocaleDateString()}</td>
                       <td>
                         <div className="subscriber-email-cell">
@@ -213,6 +339,16 @@ const AdminInquiries = () => {
                       <td>
                         <div className={`status-badge-modern ${sub.isActive ? 'active' : 'inactive'}`}>
                           {sub.isActive ? 'Active' : 'Unsubscribed'}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="action-buttons-modern">
+                          <a href={`mailto:${sub.email}`} className="btn-icon-modern email" title="Send Email">
+                            <ExternalLink size={16} />
+                          </a>
+                          <button onClick={() => deleteSubscriber(sub._id)} className="btn-icon-modern delete" title="Delete Subscriber">
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -271,7 +407,12 @@ const AdminInquiries = () => {
         }
 
         .admin-filters-bar-modern {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           margin-bottom: 1.5rem;
+          gap: 1rem;
+          flex-wrap: wrap;
         }
 
         .search-box-modern {
@@ -282,7 +423,56 @@ const AdminInquiries = () => {
           border: 1px solid rgba(255, 255, 255, 0.08);
           padding: 10px 16px;
           border-radius: 12px;
+          flex: 1;
           max-width: 400px;
+        }
+
+        .admin-actions-group {
+          display: flex;
+          gap: 12px;
+        }
+
+        .btn-action-modern {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 20px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.05);
+          color: white;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .btn-action-modern:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-2px);
+        }
+
+        .btn-action-modern:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .btn-action-modern.export {
+          border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-action-modern.export:hover:not(:disabled) {
+          background: rgba(34, 197, 94, 0.1);
+          border-color: #22c55e;
+        }
+
+        .btn-action-modern.delete-bulk {
+          border-color: rgba(239, 68, 68, 0.3);
+          color: #ef4444;
+        }
+
+        .btn-action-modern.delete-bulk:hover {
+          background: rgba(239, 68, 68, 0.1);
+          border-color: #ef4444;
         }
 
         .search-box-modern input {
@@ -291,6 +481,11 @@ const AdminInquiries = () => {
           color: white;
           outline: none;
           flex: 1;
+        }
+
+        .search-box-modern:focus-within {
+          border-color: #f97316;
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .admin-modern-table {
@@ -309,14 +504,46 @@ const AdminInquiries = () => {
           letter-spacing: 0.05em;
         }
 
+        .checkbox-col {
+          width: 40px;
+          padding: 0 0 0 20px !important;
+        }
+
+        .btn-check, .btn-check-all {
+          background: transparent;
+          border: none;
+          color: rgba(255, 255, 255, 0.3);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          transition: all 0.2s;
+        }
+
+        .btn-check:hover, .btn-check-all:hover {
+          color: #f97316;
+        }
+
+        .text-orange { color: #f97316 !important; }
+
         .admin-modern-table tbody tr {
           background: rgba(255, 255, 255, 0.02);
           transition: all 0.2s;
         }
 
+        .admin-modern-table tbody tr.selected {
+          background: rgba(249, 115, 22, 0.05);
+          border-left: 2px solid #f97316;
+        }
+
         .admin-modern-table tbody tr:hover {
           background: rgba(255, 255, 255, 0.04);
           transform: scale(1.002);
+        }
+
+        .admin-modern-table tbody tr.selected:hover {
+          background: rgba(249, 115, 22, 0.08);
         }
 
         .admin-modern-table td {
@@ -392,6 +619,7 @@ const AdminInquiries = () => {
         .btn-icon-modern.read:hover { background: #3b82f6; border-color: #3b82f6; }
         .btn-icon-modern.respond:hover { background: #22c55e; border-color: #22c55e; }
         .btn-icon-modern.email:hover { background: #f97316; border-color: #f97316; }
+        .btn-icon-modern.delete:hover { background: #ef4444; border-color: #ef4444; }
 
         .subscriber-email-cell {
           display: flex;

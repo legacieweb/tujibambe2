@@ -87,7 +87,12 @@ const TourDetails = () => {
   if (!tour) return <div className="error-container">Tour not found</div>;
 
   const images = tour.gallery && tour.gallery.length > 0 ? tour.gallery : [tour.image];
-  const isDeadlinePassed = tour?.bookingDeadline && new Date(tour.bookingDeadline) < new Date();
+  // Determine if booking is closed: 
+  // For timed events (like Safari Rally), use the eventDate. If eventDate is passed, booking is closed.
+  // For other tours, use bookingDeadline if available.
+  const isDeadlinePassed = tour.type === 'timed' 
+    ? new Date(tour.eventDate) < new Date() 
+    : (tour?.bookingDeadline && new Date(tour.bookingDeadline) < new Date());
 
   return (
     <div className="tour-details-modern-page">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Mountain, 
@@ -13,9 +13,11 @@ import {
   Play
 } from 'lucide-react';
 import SEO from '../components/SEO';
+import InquiryModal from '../components/InquiryModal';
 import '../styles/Adventures_New.css';
 
 const Adventures = () => {
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
   const adventureCategories = [
     {
       title: "Mountain Expeditions",
@@ -151,12 +153,21 @@ const Adventures = () => {
           <div className="cta-box">
             <h2>Ready for your next journey?</h2>
             <p>Contact our experts to plan your customized adventure today.</p>
-            <Link to="/contact" className="btn-modern-primary">
+            <button 
+              onClick={() => setIsInquiryOpen(true)} 
+              className="btn-modern-primary"
+            >
               Start Planning <Compass size={20} />
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      <InquiryModal 
+        isOpen={isInquiryOpen} 
+        onClose={() => setIsInquiryOpen(false)} 
+        defaultSubject="Adventure Planning Inquiry"
+      />
     </div>
   );
 };

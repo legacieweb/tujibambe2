@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Music, 
@@ -9,7 +9,7 @@ import {
   Clock, 
   MapPin, 
   Sparkles,
-  Play,
+  Play, 
   ArrowRight,
   Zap,
   Star,
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import { useCurrency } from '../context/CurrencyContext';
+import InquiryModal from '../components/InquiryModal';
 import '../styles/EpicFunTimes_New.css';
 
 // Import Peponi images
@@ -33,6 +34,13 @@ import peponi8 from '../assets/peponi 8.PNG';
 
 const EpicFunTimes = () => {
   const { formatPrice } = useCurrency();
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+  const [inquirySubject, setInquirySubject] = useState('');
+
+  const openInquiry = (subject) => {
+    setInquirySubject(subject);
+    setIsInquiryOpen(true);
+  };
 
   const otherParties = [
     {
@@ -232,9 +240,12 @@ const EpicFunTimes = () => {
                     <span><Calendar size={14} /> {party.date}</span>
                     <span><MapPin size={14} /> {party.location}</span>
                   </div>
-                  <Link to="/contact" className="btn-text-link">
+                  <button 
+                    onClick={() => openInquiry(`Party Inquiry: ${party.title}`)} 
+                    className="btn-text-link"
+                  >
                     Join Event <ArrowRight size={16} />
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -254,9 +265,12 @@ const EpicFunTimes = () => {
                 <li><Star size={18} /> Premium Bottle Service</li>
                 <li><Users size={18} /> Dedicated Host</li>
               </ul>
-              <Link to="/contact" className="btn-modern-primary">
+              <button 
+                onClick={() => openInquiry('VIP Table Booking')} 
+                className="btn-modern-primary"
+              >
                 Inquire for VIP <Phone size={20} />
-              </Link>
+              </button>
             </div>
             <div className="vip-visual">
               <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="VIP Experience" />
@@ -264,6 +278,12 @@ const EpicFunTimes = () => {
           </div>
         </div>
       </section>
+
+      <InquiryModal 
+        isOpen={isInquiryOpen} 
+        onClose={() => setIsInquiryOpen(false)} 
+        defaultSubject={inquirySubject}
+      />
     </div>
   );
 };

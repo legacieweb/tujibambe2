@@ -251,7 +251,6 @@ const Home = () => {
                       className="btn-modern-primary"
                     >
                       <span className="btn-text">{slide.buttonText}</span>
-                      <span className="btn-icon"><ChevronRight size={20} /></span>
                     </Link>
                   </div>
                 </div>
@@ -354,7 +353,6 @@ const Home = () => {
               </div>
               <Link to={safariRallyTour ? `/tours/${safariRallyTour._id}` : "/tours"} className="rally-cta-btn">
                 <span>Book Your Seat</span>
-                <ArrowRight size={24} />
               </Link>
             </div>
           </div>

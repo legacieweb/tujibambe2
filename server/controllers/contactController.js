@@ -75,3 +75,39 @@ exports.updateInquiryStatus = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
+// Admin: Delete inquiry
+exports.deleteInquiry = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Inquiry.findByIdAndDelete(id);
+        res.status(200).json({ success: true, message: 'Inquiry deleted' });
+    } catch (error) {
+        console.error('Error deleting inquiry:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// Admin: Delete subscriber
+exports.deleteSubscriber = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Subscriber.findByIdAndDelete(id);
+        res.status(200).json({ success: true, message: 'Subscriber deleted' });
+    } catch (error) {
+        console.error('Error deleting subscriber:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// Admin: Bulk delete subscribers
+exports.bulkDeleteSubscribers = async (req, res) => {
+    try {
+        const { ids } = req.body;
+        await Subscriber.deleteMany({ _id: { $in: ids } });
+        res.status(200).json({ success: true, message: 'Subscribers deleted' });
+    } catch (error) {
+        console.error('Error bulk deleting subscribers:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};

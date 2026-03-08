@@ -4,7 +4,10 @@ const {
     subscribe, 
     getAllInquiries, 
     getAllSubscribers, 
-    updateInquiryStatus 
+    updateInquiryStatus,
+    deleteInquiry,
+    deleteSubscriber,
+    bulkDeleteSubscribers
 } = require('../controllers/contactController');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
@@ -18,5 +21,8 @@ router.post('/subscribe', subscribe);
 router.get('/inquiries', auth, admin, getAllInquiries);
 router.get('/subscribers', auth, admin, getAllSubscribers);
 router.patch('/inquiry/:id', auth, admin, updateInquiryStatus);
+router.delete('/inquiry/:id', auth, admin, deleteInquiry);
+router.delete('/subscriber/:id', auth, admin, deleteSubscriber);
+router.post('/subscribers/bulk-delete', auth, admin, bulkDeleteSubscribers);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, Send, Loader2, CheckCircle2 } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, Send, Loader2, CheckCircle2, Sparkles } from 'lucide-react';
 import '../styles/Footer.css';
 
 const TikTokIcon = ({ size = 20 }) => (
@@ -48,49 +48,57 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-top">
         <div className="footer-container">
-          <div className="footer-newsletter">
-            <div className="newsletter-text">
-              <h3>Join the Adventure Club</h3>
-              <p>Subscribe to receive exclusive tour offers and wilderness tips.</p>
+          <div className="footer-newsletter-refined">
+            <div className="newsletter-content">
+              <div className="newsletter-badge">
+                <Sparkles size={16} />
+                <span>VIP ACCESS</span>
+              </div>
+              <h3>Unlock <span className="elegant-highlight">Premium Adventures</span></h3>
+              <p>Get exclusive wilderness insights, early access to private tours, and insider tips from our expert guides. Join Kenya's elite adventure community.</p>
             </div>
             
-            <div className="newsletter-form-container">
+            <div className="newsletter-action-area">
               {status.type === 'success' ? (
-                <div className="newsletter-success-state">
-                  <div className="success-icon-wrapper">
+                <div className="newsletter-success-modern">
+                  <div className="success-check-pulse">
                     <CheckCircle2 size={32} />
                   </div>
-                  <div className="success-text">
-                    <h4>You're in!</h4>
+                  <div className="success-info">
+                    <h4>You're on the list!</h4>
                     <p>{status.message}</p>
                   </div>
                   <button 
                     onClick={() => setStatus({ loading: false, message: '', type: '' })}
-                    className="btn-newsletter-reset"
+                    className="btn-done-modern"
                   >
                     Done
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="newsletter-form">
-                  <div className="newsletter-input-group">
+                <form onSubmit={handleSubscribe} className="newsletter-form-modern">
+                  <div className="input-with-icon">
+                    <Mail size={20} className="mail-icon" />
                     <input 
                       type="email" 
-                      placeholder="Enter your email" 
+                      placeholder="Your email address" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                    <button type="submit" disabled={status.loading}>
-                      {status.loading ? (
-                        <Loader2 size={18} className="animate-spin" />
-                      ) : (
-                        <Send size={18} />
-                      )}
-                    </button>
                   </div>
+                  <button type="submit" className="btn-subscribe-modern" disabled={status.loading}>
+                    {status.loading ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      <>
+                        <span>Subscribe</span>
+                        <Send size={18} />
+                      </>
+                    )}
+                  </button>
                   {status.message && status.type === 'error' && (
-                    <p className="newsletter-status error">{status.message}</p>
+                    <div className="newsletter-error-mini">{status.message}</div>
                   )}
                 </form>
               )}

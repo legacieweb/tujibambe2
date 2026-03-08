@@ -4,17 +4,10 @@ import { Bell, Menu, X, Compass, Search } from 'lucide-react';
 const UserHeader = ({ user, toggleSidebar, isSidebarOpen }) => {
   return (
     <>
-      <header className="mobile-user-header">
-        <div className="mobile-logo">
-          <Compass size={24} />
-          <span>Tujibambe</span>
-        </div>
-        <button className="sidebar-toggle-btn" onClick={toggleSidebar}>
+      <header className="user-content-header">
+        <button className="sidebar-toggle-btn desktop-hide" onClick={toggleSidebar}>
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </header>
-
-      <header className="user-content-header">
         <div className="header-greeting">
           <span className="greeting-pill">Welcome Back</span>
           <h1>Hello, {user?.name?.split(' ')[0]}!</h1>
