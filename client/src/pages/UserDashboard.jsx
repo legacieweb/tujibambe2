@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import UserSidebar from '../components/user/UserSidebar';
 import UserHeader from '../components/user/UserHeader';
@@ -18,10 +18,11 @@ const UserDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check for tab in query params
-    const queryParams = new URLSearchParams(window.location.search);
+    const queryParams = new URLSearchParams(location.search);
     const tabParam = queryParams.get('tab');
     if (tabParam) {
       setActiveTab(tabParam);
@@ -30,7 +31,7 @@ const UserDashboard = () => {
     const handleSwitchTab = (e) => setActiveTab(e.detail);
     window.addEventListener('switchTab', handleSwitchTab);
     return () => window.removeEventListener('switchTab', handleSwitchTab);
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
     const fetchBookings = async () => {
