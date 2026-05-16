@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
@@ -39,7 +40,7 @@ const UserDashboard = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('https://tujibambe2.onrender.com/api/bookings/my-bookings', {
+        const res = await axios.get(`${API_BASE_URL}/api/bookings/my-bookings`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(res.data);

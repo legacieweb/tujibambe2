@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { 
@@ -128,9 +129,7 @@ const TicketBookingPage = () => {
     setIsVerifying(true);
     try {
       const token = localStorage.getItem('token');
-      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000/api'
-        : 'https://tujibambe2.onrender.com/api';
+      const baseUrl = `${API_BASE_URL}/api`;
 
       // Directly create booking after successful popup payment
       await axios.post(`${baseUrl}/bookings`, {

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
+import API_BASE_URL from '../api/config';
 import '../styles/Home.css';
 import '../styles/Tours.css'; // Reusing some styles
 import '../styles/CarHire.css';
@@ -66,9 +67,7 @@ const CarHire = () => {
 
   const fetchVehicles = async () => {
     try {
-      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000/api'
-        : 'https://tujibambe2.onrender.com/api';
+      const baseUrl = `${API_BASE_URL}/api`;
       const response = await fetch(`${baseUrl}/vehicles`);
       const data = await response.json();
       setVehicles(data);
@@ -109,9 +108,7 @@ const CarHire = () => {
     }
 
     try {
-      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000/api'
-        : 'https://tujibambe2.onrender.com/api';
+      const baseUrl = `${API_BASE_URL}/api`;
       await axios.post(`${baseUrl}/car-bookings`, {
         vehicle: selectedVehicle._id || selectedVehicle.id,
         ...bookingData,

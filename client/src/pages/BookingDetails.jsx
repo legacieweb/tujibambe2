@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { 
   Calendar, Users, MapPin, Armchair, Share2, ArrowLeft, 
   Ticket, CheckCircle, ShieldCheck, CreditCard, 
@@ -58,8 +59,7 @@ const BookingDetails = () => {
     const fetchBooking = async () => {
       try {
         const token = localStorage.getItem('token');
-        // Use relative URL or process.env.REACT_APP_API_URL
-        const res = await axios.get(`https://tujibambe2.onrender.com/api/bookings/${id}`, {
+        const res = await axios.get(`${API_BASE_URL}/api/bookings/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBooking(res.data);

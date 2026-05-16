@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
@@ -18,7 +19,6 @@ import '../styles/Dashboard.css';
 
 const AdminDashboard = () => {
   const { user, logout, loading: authLoading } = useContext(AuthContext);
-  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
   
   const [bookings, setBookings] = useState([]);
   const [tours, setTours] = useState([]);

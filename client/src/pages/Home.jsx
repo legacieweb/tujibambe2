@@ -33,6 +33,7 @@ import '../styles/Home.css';
 import heroVideo from '../assets/184737-873923039_small.mp4';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLoading } from '../context/LoadingContext';
+import API_BASE_URL from '../api/config';
 
 const Home = () => {
   const [featuredTours, setFeaturedTours] = useState([]);
@@ -43,9 +44,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api'
-          : 'https://tujibambe2.onrender.com/api';
+        const baseUrl = `${API_BASE_URL}/api`;
 
         const [toursRes, vehiclesRes] = await Promise.all([
           axios.get(`${baseUrl}/tours`),

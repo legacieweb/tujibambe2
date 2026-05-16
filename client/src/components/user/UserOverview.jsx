@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../../api/config';
 import { Calendar, CreditCard, Clock, ChevronRight, TrendingUp, MapPin } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -28,7 +29,7 @@ const UserOverview = ({ bookings }) => {
       onSuccess: async (ref) => {
         try {
           const token = localStorage.getItem('token');
-          await axios.post(`http://localhost:5000/api/bookings/${booking.id}/pay`, {
+          await axios.post(`${API_BASE_URL}/api/bookings/${booking.id}/pay`, {
             amount: balanceUSD, 
             paymentReference: ref,
             currency: currentCurrency

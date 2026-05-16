@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Save, X, Compass, MapPin, Tag, DollarSign, Image as ImageIcon, Type } from 'lucide-react';
 
@@ -23,7 +24,7 @@ const AdminTourForm = () => {
     if (isEdit) {
       const fetchTour = async () => {
         try {
-          const res = await axios.get(`https://tujibambe2.onrender.com/api/tours/${id}`);
+          const res = await axios.get(`${API_BASE_URL}/api/tours/${id}`);
           setFormData(res.data);
         } catch (err) {
           console.error(err);
@@ -44,11 +45,11 @@ const AdminTourForm = () => {
     try {
       const token = localStorage.getItem('token');
       if (isEdit) {
-        await axios.put(`https://tujibambe2.onrender.com/api/tours/${id}`, formData, {
+        await axios.put(`${API_BASE_URL}/api/tours/${id}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        await axios.post('https://tujibambe2.onrender.com/api/tours', formData, {
+        await axios.post(`${API_BASE_URL}/api/tours`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }

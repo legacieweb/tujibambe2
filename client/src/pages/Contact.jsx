@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import SEO from '../components/SEO';
 import { AuthContext } from '../context/AuthContext';
 import { 
@@ -18,7 +19,6 @@ import {
 } from 'lucide-react';
 import '../styles/Contact.css';
 
-const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
 
 const Contact = () => {
   const { user } = useContext(AuthContext);

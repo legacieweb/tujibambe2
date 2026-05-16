@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLoading } from '../context/LoadingContext';
+import API_BASE_URL from '../api/config';
 import { 
   Calendar, 
   Users, 
@@ -43,9 +44,7 @@ const TourDetails = () => {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api'
-          : 'https://tujibambe2.onrender.com/api';
+        const baseUrl = `${API_BASE_URL}/api`;
         const res = await axios.get(`${baseUrl}/tours/${id}`);
         setTour(res.data);
       } catch (err) {

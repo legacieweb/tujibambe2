@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLoading } from '../context/LoadingContext';
+import API_BASE_URL from '../api/config';
 import { 
   Calendar, 
   Users, 
@@ -70,9 +71,7 @@ const BookingPage = () => {
       try {
         const queryParams = new URLSearchParams(location.search);
         const inviteCode = queryParams.get('invite');
-        const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api'
-          : 'https://tujibambe2.onrender.com/api';
+        const baseUrl = `${API_BASE_URL}/api`;
 
         const [tourRes, vehiclesRes] = await Promise.all([
           axios.get(`${baseUrl}/tours/${id}`),
@@ -140,9 +139,7 @@ const BookingPage = () => {
     setIsVerifying(true);
     try {
       const token = localStorage.getItem('token');
-      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5000/api'
-        : 'https://tujibambe2.onrender.com/api';
+      const baseUrl = `${API_BASE_URL}/api`;
 
       const total = calculateTotal();
       const amountPaid = paymentType === 'full' ? total : (total * 0.1);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
+import API_BASE_URL from '../api/config';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -15,10 +16,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:5000/api/users/login'
-      : 'https://tujibambe2.onrender.com/api/users/login';
-    const response = await axios.post(apiUrl, credentials);
+    const response = await axios.post(`${API_BASE_URL}/api/users/login`, credentials);
     const data = response.data;
     setUser(data.user);
     localStorage.setItem('user', JSON.stringify(data.user));
@@ -27,10 +25,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (userData) => {
-    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:5000/api/users/signup'
-      : 'https://tujibambe2.onrender.com/api/users/signup';
-    const response = await axios.post(apiUrl, userData);
+    const response = await axios.post(`${API_BASE_URL}/api/users/signup`, userData);
     const data = response.data;
     setUser(data.user);
     localStorage.setItem('user', JSON.stringify(data.user));

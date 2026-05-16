@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../../api/config';
 import { Car, MapPin, Calendar, Clock, ChevronRight, Fuel, Gauge, Shield, Users } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -11,10 +12,7 @@ const UserCarBookings = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api/vehicles'
-          : 'https://tujibambe2.onrender.com/api/vehicles';
-        const res = await axios.get(apiUrl);
+        const res = await axios.get(`${API_BASE_URL}/api/vehicles`);
         setVehicles(res.data || []);
         setLoading(false);
       } catch (err) {

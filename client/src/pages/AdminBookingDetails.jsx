@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../api/config';
 import { 
   Calendar, Users, MapPin, Armchair, ArrowLeft, 
   CheckCircle, ShieldCheck, CreditCard, 
@@ -55,8 +56,6 @@ const AdminBookingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://tujibambe2.onrender.com';
-
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -72,7 +71,7 @@ const AdminBookingDetails = () => {
       }
     };
     fetchBooking();
-  }, [id, API_BASE_URL]);
+  }, [id]);
 
   const updateStatus = async (newStatus) => {
     setUpdating(true);

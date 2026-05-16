@@ -18,6 +18,7 @@ import {
 import '../styles/Tours.css';
 import { useCurrency } from '../context/CurrencyContext';
 import { useLoading } from '../context/LoadingContext';
+import API_BASE_URL from '../api/config';
 
 const Tours = () => {
   const navigate = useNavigate();
@@ -61,10 +62,7 @@ const Tours = () => {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api/tours'
-          : 'https://tujibambe2.onrender.com/api/tours';
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`${API_BASE_URL}/api/tours`);
         
         setTours(response.data || []);
         setFilteredTours(response.data || []);
