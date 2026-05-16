@@ -28,6 +28,7 @@ const TicketBookingPage = () => {
   const [date, setDate] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [countdown, setCountdown] = useState(10);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     // Mock event data based on type
@@ -77,10 +78,9 @@ const TicketBookingPage = () => {
     if (showSuccess && countdown > 0) {
       const timer = setInterval(() => setCountdown(prev => prev - 1), 1000);
       return () => clearInterval(timer);
-    } else if (showSuccess && countdown === 0) {
-      navigate('/dashboard');
     }
-  }, [showSuccess, countdown, navigate]);
+    // Removed automatic redirect to dashboard
+  }, [showSuccess, countdown]);
 
   if (!user) {
     return (
@@ -107,35 +107,40 @@ const TicketBookingPage = () => {
       return;
     }
 
-    if (window.IyonicPay) {
-      window.IyonicPay.pay({
-        username: 'tujibambe',
-        amount: parseFloat(convertedTotal.toFixed(2)),
-        currency: currency,
-        description: `Ticket purchase: ${event.title} (${quantity} tickets)`,
-        onSuccess: (ref) => {
-          completeBooking(ref);
-        },
-        onCancel: () => console.log('Payment cancelled')
-      });
-    } else {
-      alert('Payment system unavailable. Please try again.');
+    if (!window.IyonicPay) {
+      alert('Payment system is not ready. Please try again later.');
+      return;
     }
+
+    window.IyonicPay.pay({
+      username: 'tujibambe',
+      amount: totalAmount,
+      currency: currency === 'KES' ? 'KES' : 'USD',
+      description: `Ticket for ${event.title}`,
+      baseUrl: 'https://pay.iyonicorp.com',
+      onSuccess: (ref) => {
+        completeBooking({ reference: ref });
+      }
+    });
   };
 
   const completeBooking = async (reference) => {
+    setIsVerifying(true);
     try {
       const token = localStorage.getItem('token');
-      // Create a booking record. We use a generic 'tour' ID or handle it specially in backend
-      // For this demo, we'll just simulate a successful booking
-      await axios.post('https://tujibambe2.onrender.com/api/bookings', {
+      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000/api'
+        : 'https://tujibambe2.onrender.com/api';
+
+      // Directly create booking after successful popup payment
+      await axios.post(`${baseUrl}/bookings`, {
         eventTitle: event.title,
         eventType: type === 'pool-party' ? 'EpicFunTime' : 'EventPlanning',
         bookingDate: date,
         numberOfPeople: quantity,
         totalPrice: totalAmount,
         currency: 'USD',
-        paymentReference: reference?.reference
+        paymentReference: reference.reference
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -143,8 +148,10 @@ const TicketBookingPage = () => {
       setShowSuccess(true);
     } catch (err) {
       console.error(err);
-      // Even if API fails (since ID might be invalid), we show success for the UI demo if requested
+      // Even if API fails, we show success for the UI demo if requested
       setShowSuccess(true); 
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -225,8 +232,16 @@ const TicketBookingPage = () => {
               </div>
             </div>
 
-            <button className="btn-pay-now" onClick={handlePayment}>
-              Pay with IyonicPay <Zap size={18} />
+            <button 
+              className="btn-pay-now" 
+              onClick={handlePayment}
+              disabled={isVerifying}
+            >
+              {isVerifying ? (
+                <>Verifying Payment...</>
+              ) : (
+                <>Pay with IyonicPay <Zap size={18} /></>
+              )}
             </button>
 
             <div className="secure-payment-notice">
@@ -240,11 +255,12 @@ const TicketBookingPage = () => {
         <div className="success-overlay">
           <div className="success-modal elite-glass">
             <div className="success-icon">
-              <PartyPopper size={48} />
+              <PartyPopper size={64} className="text-primary animate-bounce" />
             </div>
-            <h2>Tickets Confirmed!</h2>
-            <p>Your tickets for <strong>{event.title}</strong> have been secured.</p>
-            <div className="ticket-preview-mini">
+            <h2 className="text-3xl font-bold mb-2">Tickets Confirmed!</h2>
+            <p className="text-gray-600 mb-6">Your tickets for <strong>{event.title}</strong> have been secured. We've sent the details to your email.</p>
+            
+            <div className="ticket-preview-mini mb-8">
               <div className="mini-ticket-side">
                 <span>ADMIT {quantity}</span>
                 <strong>#{Math.floor(Math.random() * 900000) + 100000}</strong>
@@ -252,12 +268,18 @@ const TicketBookingPage = () => {
               <div className="mini-ticket-main">
                 <small>EVENT</small>
                 <strong>{event.title}</strong>
+                <div className="mt-2 text-xs text-gray-500">Paid: {formatPrice(totalAmount)}</div>
               </div>
             </div>
-            <p className="redirect-hint">Redirecting to your dashboard in {countdown}s...</p>
-            <button className="btn-modern-primary" onClick={() => navigate('/dashboard')}>
-              Go to Dashboard Now
-            </button>
+
+            <div className="flex gap-4 w-full">
+              <button className="btn-modern-secondary flex-1" onClick={() => setShowSuccess(false)}>
+                Stay Here
+              </button>
+              <button className="btn-modern-primary flex-1" onClick={() => navigate('/dashboard')}>
+                Go to Dashboard
+              </button>
+            </div>
           </div>
         </div>
       )}

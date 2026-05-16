@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import AdminSidebar from '../components/admin/AdminSidebar';
-import AdminHeader from '../components/admin/AdminHeader';
 import AdminOverview from '../components/admin/AdminOverview';
 import AdminTours from '../components/admin/AdminTours';
 import AdminCustomers from '../components/admin/AdminCustomers';
@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [tours, setTours] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
@@ -38,14 +40,20 @@ const AdminDashboard = () => {
       }
 
       try {
-        const [bookingsRes, toursRes] = await Promise.all([
+        const [bookingsRes, toursRes, inquiriesRes, vehiclesRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/api/bookings/all`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          axios.get(`${API_BASE_URL}/api/tours`)
+          axios.get(`${API_BASE_URL}/api/tours`),
+          axios.get(`${API_BASE_URL}/api/inquiries`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`${API_BASE_URL}/api/vehicles`)
         ]);
         setBookings(bookingsRes.data);
         setTours(toursRes.data);
+        setInquiries(inquiriesRes.data);
+        setVehicles(vehiclesRes.data);
         
         // Extract unique customers from bookings
         const uniqueCustomers = [];
@@ -119,12 +127,40 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateInquiryStatus = async (id, status) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.patch(`${API_BASE_URL}/api/inquiries/${id}`, { status }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInquiries(inquiries.map(i => i.id === id ? res.data : i));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update inquiry status');
+    }
+  };
+
+  const handleDeleteInquiry = async (id) => {
+    if (window.confirm('Are you sure you want to delete this inquiry?')) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`${API_BASE_URL}/api/inquiries/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setInquiries(inquiries.filter(i => i.id !== id));
+      } catch (err) {
+        console.error(err);
+        alert('Failed to delete inquiry');
+      }
+    }
+  };
+
 
 
 
 
   return (
-    <div className={`dashboard-wrapper ${isSidebarOpen ? 'sidebar-active' : ''}`}>
+    <div className={`dashboard-wrapper user-theme admin-theme ${isSidebarOpen ? 'sidebar-active' : ''}`}>
       <AdminSidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
@@ -135,12 +171,17 @@ const AdminDashboard = () => {
       />
 
       <main className="dashboard-main-content">
-        <AdminHeader 
-          user={user} 
-          toggleSidebar={toggleSidebar} 
-          isSidebarOpen={isSidebarOpen} 
-          handleLogout={handleLogout}
-        />
+        <div className="dashboard-welcome-section">
+          <div className="welcome-text">
+            <h1>Welcome back, <span>{user?.name || 'Admin'}</span></h1>
+            <p>Here's what's happening with Tujibambe today.</p>
+          </div>
+          <div className="quick-actions">
+            <button className="mobile-toggle-btn" onClick={toggleSidebar}>
+              <Menu size={24} />
+            </button>
+          </div>
+        </div>
 
         <div className="dashboard-scrollable-content">
           {activeTab === 'overview' && (
@@ -157,10 +198,16 @@ const AdminDashboard = () => {
           {activeTab === 'tours' && <AdminTours tours={tours} handleDeleteTour={handleDeleteTour} />}
           {activeTab === 'epic-fun-times' && <AdminEpicFunTimes bookings={bookings.filter(b => b.eventType === 'EpicFunTime')} handleDeleteBooking={handleDeleteBooking} handleUpdateBookingStatus={handleUpdateBookingStatus} />}
           {activeTab === 'event-planning' && <AdminEventPlanning bookings={bookings.filter(b => b.eventType === 'EventPlanning')} handleDeleteBooking={handleDeleteBooking} handleUpdateBookingStatus={handleUpdateBookingStatus} />}
-          {activeTab === 'vehicles' && <AdminVehicles />}
-          {activeTab === 'car-bookings' && <AdminCarBookings />}
+          {activeTab === 'vehicles' && <AdminVehicles vehicles={vehicles} />}
+          {activeTab === 'car-bookings' && <AdminCarBookings bookings={bookings.filter(b => b.eventType === 'CarRental' || b.vehicleId)} handleDeleteBooking={handleDeleteBooking} handleUpdateBookingStatus={handleUpdateBookingStatus} />}
           {activeTab === 'customers' && <AdminCustomers customers={customers} bookings={bookings} />}
-          {activeTab === 'inquiries' && <AdminInquiries />}
+          {activeTab === 'inquiries' && (
+            <AdminInquiries 
+              inquiries={inquiries} 
+              handleUpdateInquiryStatus={handleUpdateInquiryStatus} 
+              handleDeleteInquiry={handleDeleteInquiry} 
+            />
+          )}
           {activeTab === 'financials' && (
             <AdminFinancials 
               bookings={bookings} 

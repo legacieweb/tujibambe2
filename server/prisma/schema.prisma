@@ -1,0 +1,216 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  user
+  admin
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(user)
+  createdAt DateTime @default(now())
+
+  bookings    Booking[]
+  carBookings CarBooking[]
+  trips       Trip[]
+}
+
+enum TourType {
+  group
+  timed
+}
+
+model Tour {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  description     String
+  location        String
+  price           Float
+  image           String
+  duration        String
+  category        String
+  maxGroupSize    Int
+  type            TourType  @default(group)
+  eventDate       DateTime?
+  bookingDeadline DateTime?
+  gallery         String[]
+  isAllInclusive  Boolean   @default(false)
+  video           String?
+
+  // Flattened carDetails
+  carDetailsName       String @default("Safari Land Cruiser")
+  carDetailsImage      String @default("https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80")
+  carDetailsTotalSeats Int    @default(8)
+
+  createdAt DateTime  @default(now())
+  bookings  Booking[]
+  trips     Trip[]
+}
+
+enum Transmission {
+  Automatic
+  Manual
+}
+
+enum Fuel {
+  Petrol
+  Diesel
+  Electric
+  Hybrid
+}
+
+model Vehicle {
+  id           String       @id @default(cuid())
+  name         String
+  type         String
+  capacity     Int
+  image        String
+  pricePerDay  Float
+  features     String[]
+  description  String?
+  transmission Transmission @default(Manual)
+  fuel         Fuel         @default(Diesel)
+  year         Int?
+  rating       Float        @default(4.5)
+  reviewsCount Int          @default(0)
+  availability Boolean      @default(true)
+  gallery      String[]
+
+  bookings    Booking[]
+  carBookings CarBooking[]
+  trips       Trip[]
+}
+
+enum EventType {
+  Adventure
+  EpicFunTime
+  EventPlanning
+  Tour
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+}
+
+model Booking {
+  id               String        @id @default(cuid())
+  user             User          @relation(fields: [userId], references: [id])
+  userId           String
+  tour             Tour?         @relation(fields: [tourId], references: [id])
+  tourId           String?
+  eventTitle       String?
+  eventType        EventType     @default(Tour)
+  trip             Trip?         @relation(fields: [tripId], references: [id])
+  tripId           String?
+  vehicle          Vehicle?      @relation(fields: [vehicleId], references: [id])
+  vehicleId        String?
+  bookingDate      DateTime
+  numberOfPeople   Int
+  selectedSeats    Int[]
+  totalPrice       Float
+  amountPaid       Float         @default(0)
+  paymentThreshold Float         @default(0.1) // 10% by default
+  currency         String        @default("USD")
+  isCoordinator    Boolean       @default(false)
+  status           BookingStatus @default(pending)
+  paymentReference String?
+  paymentStatus    PaymentStatus @default(pending)
+  createdAt        DateTime      @default(now())
+  payments         Payment[]
+}
+
+model CarBooking {
+  id               String        @id @default(cuid())
+  user             User          @relation(fields: [userId], references: [id])
+  userId           String
+  vehicle          Vehicle       @relation(fields: [vehicleId], references: [id])
+  vehicleId        String
+  startDate        DateTime
+  endDate          DateTime
+  totalPrice       Float
+  amountPaid       Float         @default(0)
+  paymentThreshold Float         @default(0.1)
+  currency         String        @default("USD")
+  status           BookingStatus @default(pending)
+  paymentReference String?
+  paymentStatus    PaymentStatus @default(pending)
+  pickupLocation   String
+  dropoffLocation  String
+  createdAt        DateTime      @default(now())
+  payments         Payment[]
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  booking          Booking?      @relation(fields: [bookingId], references: [id])
+  bookingId        String?
+  carBooking       CarBooking?   @relation(fields: [carBookingId], references: [id])
+  carBookingId     String?
+  amount           Float
+  currency         String        @default("USD")
+  paymentReference String        @unique
+  paymentStatus    PaymentStatus @default(completed)
+  createdAt        DateTime      @default(now())
+}
+
+enum InquiryStatus {
+  pending
+  read
+  responded
+}
+
+model Inquiry {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    InquiryStatus @default(pending)
+  createdAt DateTime      @default(now())
+}
+
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+}
+
+enum TripStatus {
+  active
+  completed
+  cancelled
+}
+
+model Trip {
+  id            String     @id @default(cuid())
+  tour          Tour       @relation(fields: [tourId], references: [id])
+  tourId        String
+  coordinator   User       @relation(fields: [coordinatorId], references: [id])
+  coordinatorId String
+  vehicle       Vehicle    @relation(fields: [vehicleId], references: [id])
+  vehicleId     String
+  date          DateTime
+  inviteCode    String     @unique
+  status        TripStatus @default(active)
+  createdAt     DateTime   @default(now())
+  bookings      Booking[]
+}

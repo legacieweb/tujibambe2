@@ -1,0 +1,138 @@
+.legal-page {
+  background: #0a0a0a;
+  color: #fff;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.legal-hero {
+  padding: 150px 0 80px;
+  background: linear-gradient(to bottom, rgba(255, 77, 0, 0.05), transparent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.legal-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.legal-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  letter-spacing: -2px;
+}
+
+.legal-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.legal-content-section {
+  padding: 80px 0;
+}
+
+.legal-text-wrapper {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.legal-text-wrapper section {
+  margin-bottom: 40px;
+}
+
+.legal-text-wrapper h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.legal-text-wrapper p {
+  margin-bottom: 15px;
+}
+
+.legal-text-wrapper ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.legal-text-wrapper li {
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.legal-text-wrapper li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  background: #ff4d00;
+  border-radius: 50%;
+}
+
+/* Sitemap Specific Styles */
+.sitemap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+.sitemap-group h3 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #ff4d00;
+  display: inline-block;
+}
+
+.sitemap-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sitemap-link-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sitemap-link-item:hover {
+  color: #ff4d00;
+  background: rgba(255, 77, 0, 0.05);
+  transform: translateX(5px);
+}
+
+.sitemap-link-item .icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  color: #ff4d00;
+}
+
+@media (max-width: 768px) {
+  .legal-title { font-size: 2.5rem; }
+  .legal-hero { padding: 120px 0 60px; }
+  .legal-content-section { padding: 40px 0; }
+  .sitemap-grid { gap: 30px; }
+}

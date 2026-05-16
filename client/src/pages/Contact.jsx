@@ -81,7 +81,7 @@ const Contact = () => {
             <Sparkles size={16} />
             <span>WE ARE HERE FOR YOU</span>
           </div>
-          <h1 className="contact-title-large">Let's start your <span className="text-highlight">Inquiry</span></h1>
+          <h1 className="contact-title-large">Let's start your <span className="text-primary">Inquiry</span></h1>
           <p className="contact-subtitle-minimal">
             Have questions about a safari or event? Fill out the inquiry below and 
             our dedicated team will craft the perfect experience for you.
@@ -142,7 +142,7 @@ const Contact = () => {
                   </div>
                   <h2>Inquiry Received!</h2>
                   <p>Thank you, <strong>{formData.name}</strong>. We've received your request and our specialists are already looking into it.</p>
-                  <button onClick={() => setStatus({ ...status, success: false })} className="btn-modern-outline">
+                  <button onClick={() => setStatus({ ...status, success: false })} className="btn-inquiry-submit">
                     Send another inquiry <ArrowRight size={18} />
                   </button>
                 </div>
@@ -172,7 +172,6 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           readOnly={!!user}
-                          className={user ? 'readonly-input' : ''}
                         />
                       </div>
 
@@ -186,7 +185,6 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           readOnly={!!user}
-                          className={user ? 'readonly-input' : ''}
                         />
                       </div>
                     </div>
@@ -198,7 +196,6 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="modern-select"
                       >
                         <option value="" disabled>What are you inquiring about?</option>
                         <option value="General Inquiry">General Inquiry</option>

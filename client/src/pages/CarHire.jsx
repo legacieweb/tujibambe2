@@ -141,7 +141,7 @@ const CarHire = () => {
   };
 
   return (
-    <div className="car-hire-page home" style={{ paddingTop: '100px' }}>
+    <div className="car-hire-page">
       <SEO 
         title="Premium Car Hire Kenya - Tujibambe Adventures"
         description="Rent premium 4x4 vehicles, safari land cruisers, and luxury vans for your Kenya adventure. Best rates and well-maintained fleet for the ultimate road trip."
@@ -153,7 +153,7 @@ const CarHire = () => {
       <section className="car-hero">
         <div className="container">
           <span className="elite-subtitle">Elite Fleet</span>
-          <h1 className="elite-title">Premium <span className="text-gradient">Car Hire</span> Solutions</h1>
+          <h1 className="elite-title">Premium <span className="text-primary">Car Hire</span> Solutions</h1>
           <p className="elite-description">
             Experience the freedom of the open road with our premium fleet of adventure-ready vehicles. 
             From rugged 4x4s to luxury vans, we have the perfect ride for your journey.

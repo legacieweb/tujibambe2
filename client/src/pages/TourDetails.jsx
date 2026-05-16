@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import SEO from '../components/SEO';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { useLoading } from '../context/LoadingContext';
 import { 
   Calendar, 
   Users, 
@@ -20,7 +21,9 @@ import {
   Star,
   Share2,
   Heart,
-  X
+  X,
+  ArrowRight,
+  Compass
 } from 'lucide-react';
 import '../styles/TourDetails.css';
 
@@ -28,9 +31,9 @@ const TourDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const { formatPrice } = useCurrency();
+  const { startLoading, stopLoading } = useLoading();
   const navigate = useNavigate();
   const [tour, setTour] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
@@ -44,13 +47,9 @@ const TourDetails = () => {
           ? 'http://localhost:5000/api'
           : 'https://tujibambe2.onrender.com/api';
         const res = await axios.get(`${baseUrl}/tours/${id}`);
-        let tourData = res.data;
-
-        setTour(tourData);
-        setLoading(false);
+        setTour(res.data);
       } catch (err) {
         console.error(err);
-        setLoading(false);
       }
     };
     fetchTour();
@@ -66,289 +65,138 @@ const TourDetails = () => {
     setActiveImageIndex((prev) => (prev - 1 + tour.gallery.length) % tour.gallery.length);
   };
 
-
-  
-  if (!tour) return <div className="error-container">Tour not found</div>;
+  if (!tour) return null;
 
   const images = tour.gallery && tour.gallery.length > 0 ? tour.gallery : [tour.image];
-  // Determine if booking is closed: 
-  // For timed events (like Safari Rally), use the eventDate. If eventDate is passed, booking is closed.
-  // For other tours, use bookingDeadline if available.
   const isDeadlinePassed = tour.type === 'timed' 
     ? new Date(tour.eventDate) < new Date() 
     : (tour?.bookingDeadline && new Date(tour.bookingDeadline) < new Date());
 
   return (
-    <div className="tour-details-modern-page">
+    <div className="tour-details-v2">
       <SEO 
-        title={`${tour.title} - Tujibambe Adventures in Kenya`}
+        title={`${tour.title} - Tujibambe Adventures`}
         description={tour.description}
-        keywords={`${tour.title}, Kenya tours, ${tour.location}, adventure tours, safari, ${tour.category}`}
-        canonical={`https://tujibambe.iyonicorp.com/tours/${id}`}
         image={tour.image}
       />
 
-      {/* Structured Data for Tour */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "TourPackage",
-          "name": tour.title,
-          "description": tour.description,
-          "url": `https://tujibambe.iyonicorp.com/tours/${id}`,
-          "provider": {
-            "@type": "TouristAttraction",
-            "name": "Tujibambe Adventures",
-            "telephone": "+254 (000) 111-222",
-            "email": "hello@tujibambe.com"
-          },
-          "image": tour.image,
-          "price": tour.price,
-          "priceCurrency": "USD",
-          "location": {
-            "@type": "Place",
-            "name": tour.location,
-            "address": {
-              "@type": "PostalAddress",
-              "addressCountry": "KE"
-            }
-          },
-          "duration": tour.duration,
-          "maximumAttendeeCapacity": tour.maxGroupSize,
-          "inclusion": [
-            "Professional Certified Guide",
-            "Comfortable 4x4 Transport",
-            "Lunch & Bottled Water",
-            "All Park Entry Fees"
-          ],
-          "exclusion": [
-            "Personal Insurance",
-            "Optional Activities & Gratuities",
-            "Alcoholic Beverages"
-          ],
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "120"
-          }
-        })}
-      </script>
-      {/* Dynamic Image Gallery Slider */}
-      <section className="gallery-slider-section">
-        <div className="slider-main">
-          <img src={images[activeImageIndex]} alt={tour.title} className="slider-img" />
-          <div className="slider-overlay"></div>
-          
-          <div className="slider-controls">
-            <button className="slider-btn prev" onClick={prevImage}><ChevronLeft size={24} /></button>
-            <button className="slider-btn next" onClick={nextImage}><ChevronRight size={24} /></button>
-          </div>
+      <div className="tour-hero-v2">
+        <div className="hero-background-v2">
+          <img src={images[activeImageIndex]} alt={tour.title} className="hero-img-v2" />
+          <div className="hero-overlay-v2"></div>
+        </div>
 
-          <div className="slider-dots">
-            {images.map((_, idx) => (
-              <span 
-                key={idx} 
-                className={`dot ${idx === activeImageIndex ? 'active' : ''}`}
-                onClick={() => setActiveImageIndex(idx)}
-              ></span>
-            ))}
-          </div>
-
-          <div className="tour-header-floating">
-            <div className="tour-badges">
-              <span className="badge-category">{tour.category}</span>
-              {tour.isAllInclusive && <span className="badge-all-inclusive">All-Inclusive</span>}
-              <span className="badge-rating"><Star size={14} fill="currentColor" /> 4.9 (120 Reviews)</span>
+        <div className="hero-content-v2">
+          <div className="container-v2">
+            <div className="badge-row">
+              <span className="glass-badge category-badge">{tour.category}</span>
+              <span className="glass-badge rating-badge"><Star size={14} fill="var(--primary)" /> 4.9 (120)</span>
             </div>
-            <h1>{tour.title}</h1>
-            <div className="tour-quick-meta">
-              <span><MapPin size={18} /> {tour.location}</span>
-              <span><Clock size={18} /> {tour.duration}</span>
-              <span><Users size={18} /> Max {tour.maxGroupSize} People</span>
+            <h1 className="hero-title-v2">{tour.title}</h1>
+            <div className="hero-meta-v2">
+              <div className="meta-item-v2"><MapPin size={18} /> {tour.location}</div>
+              <div className="meta-item-v2"><Clock size={18} /> {tour.duration}</div>
+              <div className="meta-item-v2"><Users size={18} /> Max {tour.maxGroupSize} Guests</div>
             </div>
-          </div>
-
-          <div className="gallery-actions">
-            <button className="action-circle-btn"><Heart size={20} /></button>
-            <button className="action-circle-btn"><Share2 size={20} /></button>
           </div>
         </div>
 
-        <div className="thumbnail-strip">
-          {images.map((img, idx) => (
-            <div 
-              key={idx} 
-              className={`thumb-box ${idx === activeImageIndex ? 'active' : ''}`}
-              onClick={() => setActiveImageIndex(idx)}
-            >
-              <img src={img} alt={`Thumbnail ${idx}`} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="tour-details-grid-container">
-        <div className="tour-content-main">
-          <div className="content-card info-card">
-            <div className="card-header">
-              <h2><Info size={24} /> About this Experience</h2>
-            </div>
-            <div className="card-body">
-              <p className="tour-description-text">{tour.description}</p>
-              
-              <div className="modern-inclusion-exclusion-grid">
-                <div className="inclusion-card">
-                  <div className="inclusion-card-header">
-                    <div className="icon-wrapper">
-                      <CheckCircle size={24} />
-                    </div>
-                    <h3>What's Included</h3>
-                  </div>
-                  <div className="inclusion-list">
-                    <div className="inclusion-item">
-                      <div className="inclusion-dot"></div>
-                      <span>Professional Certified Guide</span>
-                    </div>
-                    <div className="inclusion-item">
-                      <div className="inclusion-dot"></div>
-                      <span>Comfortable 4x4 Transport</span>
-                    </div>
-                    <div className="inclusion-item">
-                      <div className="inclusion-dot"></div>
-                      <span>{tour.title.toLowerCase().includes('lake victoria') ? 'Chicken, Fish & Goat Meat' : 'Lunch & Bottled Water'}</span>
-                    </div>
-                    <div className="inclusion-item">
-                      <div className="inclusion-dot"></div>
-                      <span>{tour.title.toLowerCase().includes('lake victoria') ? 'Unlimited Drinks' : 'All Park Entry Fees'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="exclusion-card">
-                  <div className="exclusion-card-header">
-                    <div className="icon-wrapper">
-                      <X size={24} />
-                    </div>
-                    <h3>What's Not Included</h3>
-                  </div>
-                  <div className="inclusion-list exclusion">
-                    <div className="inclusion-item">
-                      <div className="exclusion-dot"></div>
-                      <span>Personal Insurance</span>
-                    </div>
-                    <div className="inclusion-item">
-                      <div className="exclusion-dot"></div>
-                      <span>Optional Activities & Gratuities</span>
-                    </div>
-                    {!tour.title.toLowerCase().includes('lake victoria') && (
-                      <div className="inclusion-item">
-                        <div className="exclusion-dot"></div>
-                        <span>Alcoholic Beverages</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="hero-gallery-controls">
+          <div className="gallery-counter">{activeImageIndex + 1} / {images.length}</div>
+          <div className="gallery-nav-btns">
+            <button onClick={prevImage} className="nav-btn-v2"><ChevronLeft size={20} /></button>
+            <button onClick={nextImage} className="nav-btn-v2"><ChevronRight size={20} /></button>
           </div>
-
-          {tour.video && (
-            <div className="content-card video-card">
-              <div className="card-header">
-                <h2><Play size={24} /> Experience Highlights</h2>
-              </div>
-              <div className="card-body">
-                <div className="video-container-modern">
-                  <video 
-                    src={tour.video} 
-                    controls 
-                    className="experience-video"
-                    poster={tour.image}
-                  ></video>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
+      </div>
 
-        <div className="tour-sidebar-booking">
-          <div className="booking-sticky-card glass-morphism">
-            <div className="popular-badge">
-              <Zap size={14} />
-              <span>Most Popular Choice</span>
+      <div className="details-container-v2">
+        <div className="details-grid-v2">
+          <main className="details-main-v2">
+            <section className="section-v2">
+              <div className="section-title-v2">
+                <Compass size={24} className="text-primary" />
+                <h2>The Experience</h2>
+              </div>
+              <p className="description-v2">{tour.description}</p>
+            </section>
+
+            <div className="features-grid-v2">
+              <div className="feature-card-v2 inclusion">
+                <h3>What's Included</h3>
+                <ul className="feature-list-v2">
+                  <li><CheckCircle size={18} /> Professional Guide</li>
+                  <li><CheckCircle size={18} /> 4x4 Transport</li>
+                  <li><CheckCircle size={18} /> {tour.title.toLowerCase().includes('lake victoria') ? 'Authentic Meals' : 'Lunch & Water'}</li>
+                  <li><CheckCircle size={18} /> All Entry Fees</li>
+                </ul>
+              </div>
+
+              <div className="feature-card-v2 exclusion">
+                <h3>Not Included</h3>
+                <ul className="feature-list-v2">
+                  <li><X size={18} /> Personal Insurance</li>
+                  <li><X size={18} /> Gratuities</li>
+                  <li><X size={18} /> Extra Activities</li>
+                </ul>
+              </div>
             </div>
 
-            <div className="booking-price-section">
-              <div className="price-label-group">
-                <span className="from-label">Special Offer From</span>
-                <div className="main-price">
+            {tour.video && (
+              <section className="section-v2">
+                <div className="section-title-v2">
+                  <Play size={24} className="text-primary" />
+                  <h2>Sneak Peek</h2>
+                </div>
+                <div className="video-wrapper-v2">
+                  <video src={tour.video} controls poster={tour.image} className="video-player-v2" />
+                </div>
+              </section>
+            )}
+          </main>
+
+          <aside className="details-sidebar-v2">
+            <div className="booking-card-v2">
+              <div className="price-tag-v2">
+                <span className="price-label-v2">Starting from</span>
+                <div className="price-value-v2">
                   {formatPrice(tour.price)}
-                  <span className="per-person">/ guest</span>
+                  <span className="price-unit-v2">/person</span>
                 </div>
               </div>
-              <div className="save-badge">Save 15%</div>
-            </div>
 
-            <div className="booking-meta-grid">
-              <div className="meta-item">
-                <div className="meta-icon">
-                  <Calendar size={18} />
-                </div>
-                <div className="meta-content">
-                  <span className="meta-title">Selected Date</span>
-                  <span className="meta-value">
-                    {tour.type === 'timed' ? new Date(tour.eventDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Flexible Dates'}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="meta-item">
-                <div className="meta-icon">
+              <div className="booking-features-v2">
+                <div className="b-feature-v2">
                   <ShieldCheck size={18} />
+                  <span>Free Cancellation</span>
                 </div>
-                <div className="meta-content">
-                  <span className="meta-title">Cancellation</span>
-                  <span className="meta-value">Free (up to 48h)</span>
+                <div className="b-feature-v2">
+                  <CreditCard size={18} />
+                  <span>Secure Payment</span>
                 </div>
               </div>
-            </div>
 
-            <div className="policy-highlights">
-              <div className="policy-card">
-                <div className="policy-header">
-                  <Info size={16} />
-                  <span>Important Policy</span>
-                </div>
-                <p><strong>Auto-Shift:</strong> Single-person bookings may be consolidated for maximum efficiency.</p>
-              </div>
-            </div>
-
-            <div className="booking-action-area">
               <button 
-                className={`primary-book-now-btn ${isDeadlinePassed ? 'disabled' : ''}`}
+                className={`book-btn-v2 ${isDeadlinePassed ? 'disabled' : ''}`}
                 disabled={isDeadlinePassed}
-                onClick={() => navigate(`/book/${id}`)}
+                onClick={() => navigate(`/booking/${id}`)}
               >
-                {isDeadlinePassed ? 'Booking Closed' : 'Secure Your Spot Now'}
-                <ChevronRight size={20} />
+                {isDeadlinePassed ? 'Booking Closed' : 'Reserve Your Spot'}
+                <ArrowRight size={20} />
               </button>
-              <p className="no-money-yet">
-                <Zap size={12} className="text-primary" />
-                No immediate payment required
-              </p>
-            </div>
-            
-            <div className="trust-signals">
-              <div className="trust-item">
-                <ShieldCheck size={16} />
-                <span>Best Price Guarantee</span>
-              </div>
-              <div className="trust-item">
-                <CreditCard size={16} />
-                <span>Secure Checkout</span>
+
+              <div className="booking-footer-v2">
+                <Zap size={14} />
+                <span>Quick confirmation guaranteed</span>
               </div>
             </div>
-          </div>
+
+            <div className="sidebar-info-v2">
+              <h4>Need Help?</h4>
+              <p>Our travel experts are available 24/7 to help you plan your perfect trip.</p>
+              <button className="help-btn-v2">Contact Support</button>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

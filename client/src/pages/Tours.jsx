@@ -8,10 +8,7 @@ import {
   Star,
   MapPin,
   Clock,
-  Users,
-  Heart,
-  Play,
-  ChevronDown,
+  ArrowRight,
   ChevronLeft,
   ChevronRight,
   X,
@@ -20,19 +17,19 @@ import {
 } from 'lucide-react';
 import '../styles/Tours.css';
 import { useCurrency } from '../context/CurrencyContext';
+import { useLoading } from '../context/LoadingContext';
 
 const Tours = () => {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
+  const { startLoading, stopLoading } = useLoading();
   const [tours, setTours] = useState([]);
   const [filteredTours, setFilteredTours] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [sortBy, setSortBy] = useState('name');
-  const [favorites, setFavorites] = useState(new Set());
   const [showFilters, setShowFilters] = useState(false);
 
   // Carousel state
@@ -73,8 +70,6 @@ const Tours = () => {
         setFilteredTours(response.data || []);
       } catch (error) {
         console.error('Error fetching tours:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -135,18 +130,6 @@ const Tours = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleFavorite = (tourId) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(tourId)) {
-        newFavorites.delete(tourId);
-      } else {
-        newFavorites.add(tourId);
-      }
-      return newFavorites;
-    });
-  };
-
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedCategory('All');
@@ -156,8 +139,6 @@ const Tours = () => {
   };
 
   const categories = ['All', ...new Set((tours || []).map(tour => tour.category).filter(Boolean))];
-
-
 
   // Carousel slides data
   const carouselSlides = [
@@ -196,8 +177,7 @@ const Tours = () => {
         canonical="https://tujibambe.iyonicorp.com/tours"
       />
       
-      {/* Hero Carousel Section - Matching Home Page Style */}
-      <section className="hero-carousel">
+      <section className="hero-carousel tours-hero">
         <div 
           className="carousel-container" 
           ref={carouselRef}
@@ -212,12 +192,7 @@ const Tours = () => {
             >
               <div 
                 className="carousel-bg"
-                style={{ 
-                  backgroundImage: `url(${slide.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}
+                style={{ backgroundImage: `url(${slide.image})` }}
               >
                 <div className="carousel-overlay"></div>
               </div>
@@ -237,261 +212,119 @@ const Tours = () => {
                   </h1>
                   
                   <p className="carousel-description">{slide.description}</p>
-                  
-                  <div className="carousel-btns">
-                    <Link 
-                      to={slide.buttonLink}
-                      className="btn-modern-primary"
-                    >
-                      <span className="btn-text">{slide.buttonText}</span>
-                      <ChevronRight size={18} />
-                    </Link>
-                  </div>
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Navigation Arrows */}
-          <button 
-            className="carousel-arrow prev"
-            onClick={prevSlide}
-            aria-label="Previous slide"
-          >
-            <ChevronLeft size={32} />
-          </button>
-          <button 
-            className="carousel-arrow next"
-            onClick={nextSlide}
-            aria-label="Next slide"
-          >
-            <ChevronRight size={32} />
-          </button>
-
-          {/* Indicators */}
           <div className="carousel-indicators">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
                 className={`indicator ${index === currentSlide ? 'active' : ''}`}
                 onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
         </div>
-       </section>
-
-      {/* Featured Tours Section - Like Homepage */}
-      <section className="featured-tours-section">
-        <div className="section-header">
-          <span>Explore Kenya</span>
-          <h2>Safaris, Adventures & More</h2>
-        </div>
-        <div className="tours-grid-home">
-          {tours.slice(0, 6).map((tour, index) => (
-            <div key={tour._id || index} className="tour-card-home">
-              <div 
-                className="tour-card-image" 
-                style={{ backgroundImage: `url(${tour.image})` }}
-              >
-                <div className="tour-card-overlay">
-                  <div className="tour-card-price">{formatPrice(tour.price)}</div>
-                </div>
-              </div>
-              <div className="tour-card-content">
-                <h3>{tour.title}</h3>
-                <div className="tour-card-meta">
-                  <span><MapPin size={14} /> {tour.location}</span>
-                  <span><Clock size={14} /> {tour.duration}</span>
-                </div>
-                <Link to={`/tours/${tour.slug || tour._id}`} className="tour-card-btn">
-                  View Details <ChevronRight size={16} />
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="view-all-container">
-          <Link to="/tours" className="btn-modern-secondary-prominent">
-            View All Adventures <ChevronRight size={20} />
-          </Link>
-        </div>
       </section>
 
-      {/* All Tours Section with Filters */}
       <section className="all-tours-section">
-        <div className="section-header">
-          <span>Browse All</span>
-          <h2>Available Tours & Experiences</h2>
-        </div>
-        
         <div className="tours-container-inner">
-          {/* Advanced Filter Bar */}
-          <div className="filter-bar-redesign">
-            <div className="search-box-redesign">
-              <Search className="search-icon" size={22} />
-              <input
-                type="text"
-                placeholder="Search tours, destinations..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button
-                className={`filter-btn-toggle ${showFilters ? 'active' : ''}`}
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter size={20} />
-                <span>Filters</span>
-              </button>
+          <div className="filter-wrapper-modern">
+            <div className="section-header">
+              <span>Our Collection</span>
+              <h2>Discovery Awaits</h2>
+            </div>
+
+            <div className="filter-bar-modern">
+              <div className="search-box-modern">
+                <Search size={20} />
+                <input
+                  type="text"
+                  placeholder="Where do you want to go?"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-actions-modern">
+                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option value="name">Sort By Name</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                </select>
+
+                <button 
+                  className={`filter-toggle ${showFilters ? 'active' : ''}`}
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <Filter size={18} />
+                  <span>Advanced</span>
+                </button>
+              </div>
             </div>
 
             {showFilters && (
-              <div className="filters-expanded">
-                <div className="filter-grid">
-                  <div className="filter-item">
-                    <label>Category</label>
-                    <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="filter-item">
-                    <label>Price Range</label>
-                    <div className="price-inputs">
-                      <span>{formatPrice(priceRange[0])}</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="5000"
-                        value={priceRange[1]}
-                        onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                      />
-                      <span>{formatPrice(priceRange[1])}</span>
-                    </div>
-                  </div>
-
-                  <div className="filter-item">
-                    <label>Sort By</label>
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                      <option value="name">Name (A-Z)</option>
-                      <option value="price-low">Price (Low to High)</option>
-                      <option value="price-high">Price (High to Low)</option>
-                      <option value="rating">Rating</option>
-                      <option value="duration">Duration</option>
-                    </select>
-                  </div>
+              <div className="advanced-filters-modern">
+                <div className="filter-item-modern">
+                  <label>Max Price: {formatPrice(priceRange[1])}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="5000"
+                    step="10"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                  />
                 </div>
-                
-                <div className="filter-actions">
-                  <button className="reset-btn" onClick={clearFilters}>Reset All</button>
-                </div>
+                <button className="reset-btn-modern" onClick={clearFilters}>Reset Filters</button>
               </div>
             )}
           </div>
 
-          {/* Results Summary */}
-          <div className="results-summary">
-            <p>
-              Showing {filteredTours.length} of {tours.length} tours
-              {favorites.size > 0 && (
-                <span className="favorites-count"> • {favorites.size} favorited</span>
-              )}
-            </p>
-          </div>
-
-          {/* Tour Grid */}
-          {filteredTours.length > 0 ? (
-            <div className="tour-grid">
-              {filteredTours.map((tour, index) => (
-                <div
-                  key={tour._id}
-                  className="tour-card-wrapper"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="tour-card">
-                    <div
-                      className="tour-image"
-                      style={{ backgroundImage: `url(${tour.image || 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})` }}
-                    >
-                      <div className="tour-overlay"></div>
-
-                      <div className="tour-price-tag">
-                        {formatPrice(tour.price)}
-                      </div>
-
-                      <button
-                        className={`tour-favorite ${favorites.has(tour._id) ? 'favorite-active' : ''}`}
-                        onClick={() => toggleFavorite(tour._id)}
-                      >
-                        <Heart size={20} fill={favorites.has(tour._id) ? 'currentColor' : 'none'} />
-                      </button>
-
-                      <button 
-                        className="tour-play-btn"
-                        onClick={() => navigate(`/tours/${tour.slug || tour._id}`)}
-                      >
-                        <Play size={20} />
-                      </button>
-                    </div>
-
-                    <div className="tour-info">
-                      <div className="tour-header">
-                        <div className="tour-badges">
-                          <span className="tour-category">{tour.category}</span>
-                          <div className="tour-rating">
-                            <Star size={14} fill="currentColor" />
-                            {tour.rating || 4.8}
-                          </div>
-                        </div>
-
-                        <h3>{tour.title}</h3>
-                        <p className="tour-desc">{tour.description}</p>
-                      </div>
-
-                      <div className="tour-meta">
-                        <span>
-                          <MapPin size={16} />
-                          {tour.location}
-                        </span>
-                        <span>
-                          <Clock size={16} />
-                          {tour.duration}
-                        </span>
-                        <span>
-                          <Users size={16} />
-                          Max {tour.maxGroupSize}
-                        </span>
-                      </div>
-
-                      <div className="tour-footer">
-                        <Link 
-                          to={`/tours/${tour.slug || tour._id}`} 
-                          className="view-details"
-                        >
-                          View Details
-                          <ChevronDown size={16} style={{ transform: 'rotate(-90deg)' }} />
-                        </Link>
-                      </div>
+          <div className="tours-grid-modern">
+            {filteredTours.length > 0 ? (
+              filteredTours.map((tour, index) => (
+                <div key={tour._id || index} className="tour-card-home">
+                  <div 
+                    className="tour-card-image" 
+                    style={{ backgroundImage: `url(${tour.image})` }}
+                  >
+                    <div className="tour-card-overlay">
+                      <div className="tour-badge-top">{tour.category}</div>
+                      <div className="tour-card-price">{formatPrice(tour.price)}</div>
                     </div>
                   </div>
+                  <div className="tour-card-content">
+                    <h3>{tour.title}</h3>
+                    <div className="tour-card-meta">
+                      <span><MapPin size={14} /> {tour.location}</span>
+                      <span><Clock size={14} /> {tour.duration}</span>
+                    </div>
+                    <Link to={`/tours/${tour.slug || tour._id}`} className="tour-card-btn">
+                      <span>View Experience</span>
+                      <ArrowRight size={16} />
+                    </Link>
+                  </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="no-results">
-              <div className="no-results-content">
-                <Search size={64} />
-                <h3>No tours found</h3>
-                <p>Try adjusting your filters or search terms to find more adventures.</p>
-                <button className="clear-filters-btn" onClick={clearFilters}>
-                  Clear Filters
-                </button>
+              ))
+            ) : (
+              <div className="no-results-modern">
+                <Compass size={60} />
+                <h3>No adventures found</h3>
+                <p>Try adjusting your search or filters to find what you're looking for.</p>
+                <button onClick={clearFilters} className="btn-modern-primary">Clear All Filters</button>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
     </div>

@@ -32,30 +32,47 @@ import {
 import '../styles/Home.css';
 import heroVideo from '../assets/184737-873923039_small.mp4';
 import { useCurrency } from '../context/CurrencyContext';
+import { useLoading } from '../context/LoadingContext';
 
 const Home = () => {
   const [featuredTours, setFeaturedTours] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [loading, setLoading] = useState(true);
   const { formatPrice } = useCurrency();
 
   useEffect(() => {
-    const fetchTours = async () => {
+    const fetchData = async () => {
       try {
-        const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:5000/api/tours'
-          : 'https://tujibambe2.onrender.com/api/tours';
-        const res = await axios.get(apiUrl);
-        console.log('Fetched tours:', res.data); // Debug log
+        const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:5000/api'
+          : 'https://tujibambe2.onrender.com/api';
+
+        const [toursRes, vehiclesRes] = await Promise.all([
+          axios.get(`${baseUrl}/tours`),
+          axios.get(`${baseUrl}/vehicles`)
+        ]);
+
+        let tours = toursRes.data || [];
+        setVehicles(vehiclesRes.data || []);
         
-        setFeaturedTours(res.data || []);
+        // Sort prioritized tours to the top
+        const priorityOrder = ["Lake Victoria Expedition", "ROAD TRIP EXPERIENCE", "PARADISE ESCAPE"];
+        tours.sort((a, b) => {
+          const aIndex = priorityOrder.findIndex(title => a.title.toUpperCase().includes(title.toUpperCase()));
+          const bIndex = priorityOrder.findIndex(title => b.title.toUpperCase().includes(title.toUpperCase()));
+          
+          if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+          if (aIndex !== -1) return -1;
+          if (bIndex !== -1) return 1;
+          return 0;
+        });
+
+        setFeaturedTours(tours);
       } catch (err) {
-        console.error("Error fetching tours:", err);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching data:", err);
       }
     };
-    fetchTours();
+    fetchData();
   }, []);
 
   const getTourByTitle = (title) => {
@@ -67,9 +84,20 @@ const Home = () => {
   const beachTour = getTourByTitle("Diani Beach Relaxation");
   const amboseliTour = getTourByTitle("Amboseli National Park Safari");
   const lakeVictoriaTour = getTourByTitle("Lake Victoria Expedition");
+  const roadTripTour = getTourByTitle("ROAD TRIP EXPERIENCE");
+  const paradiseEscapeTour = getTourByTitle("PARADISE ESCAPE");
 
   // Define carousel slides as Services
   const carouselSlides = [
+    {
+      title: "Tujibambe Paradise Escape",
+      subtitle: "Upcoming Exclusive",
+      description: "Experience the ultimate coastal luxury and hidden gems of Kenya's paradise islands.",
+      image: "https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      buttonText: "Join Paradise",
+      buttonLink: paradiseEscapeTour ? `/tours/${paradiseEscapeTour.slug || paradiseEscapeTour._id}` : "/tours",
+      tourTitle: "Paradise Escape"
+    },
     {
       title: "Lake Victoria Expedition",
       subtitle: "Heart of the Lakeside",
@@ -107,13 +135,22 @@ const Home = () => {
       tourTitle: "Epic Fun Times"
     },
     {
-      title: "Premium Car Hire",
-      subtitle: "Travel in Comfort",
-      description: "Reliable and luxury vehicle rentals for your self-drive or chauffeured needs across Kenya.",
+      title: "Premium Fleet Rental",
+      subtitle: "Explore in Style",
+      description: "Rent rugged 4x4s, safari land cruisers, or luxury vans for the ultimate Kenyan road trip experience.",
       image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-      buttonText: "Rent a Car",
+      buttonText: "View Fleet",
       buttonLink: "/car-hire",
       tourTitle: "Car Hire"
+    },
+    {
+      title: "Elite Event Planning",
+      subtitle: "Bespoke Celebrations",
+      description: "From intimate wilderness weddings to high-stakes corporate retreats, we craft world-class experiences.",
+      image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      buttonText: "Start Planning",
+      buttonLink: "/event-planner",
+      tourTitle: "Event Planning"
     }
   ];
 
@@ -226,6 +263,7 @@ const Home = () => {
                       <ArrowRight size={18} />
                     </Link>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -335,36 +373,76 @@ const Home = () => {
       {/* Featured Tours Section - Make all trips available */}
       <section className="featured-tours-section">
         <div className="section-header">
-          <span>Explore Kenya</span>
-          <h2>Safaris, Car Hire and Events</h2>
+          <span>Our Collection</span>
+          <h2>Safaris, Car Hire & Events</h2>
         </div>
-        <div className="tours-grid-home">
-          {featuredTours.map((tour, index) => (
-            <div key={tour._id || index} className="tour-card-home">
-              <div 
-                className="tour-card-image" 
-                style={{ backgroundImage: `url(${tour.image})` }}
-              >
-                <div className="tour-card-overlay">
-                  <div className="tour-card-price">{formatPrice(tour.price)}</div>
+        
+        <div className="featured-container-ultra">
+          <div className="tours-grid-home">
+            {featuredTours.slice(0, 6).map((tour, index) => (
+              <div key={tour._id || index} className={`tour-card-home ${index === 0 ? 'card-spotlight' : ''}`}>
+                <div 
+                  className="tour-card-image" 
+                  style={{ backgroundImage: `url(${tour.image})` }}
+                >
+                  <div className="tour-card-overlay">
+                    <div className="tour-badge-top">{tour.category || 'Premium'}</div>
+                    <div className="tour-card-price">{formatPrice(tour.price)}</div>
+                  </div>
+                </div>
+                <div className="tour-card-content">
+                  <h3>{tour.title}</h3>
+                  <div className="tour-card-meta">
+                    <span><MapPin size={14} /> {tour.location}</span>
+                    <span><Clock size={14} /> {tour.duration}</span>
+                  </div>
+                  <Link to={`/tours/${tour.slug || tour._id}`} className="tour-card-btn">
+                    <span>Discover More</span>
+                    <ArrowRight size={16} />
+                  </Link>
                 </div>
               </div>
-              <div className="tour-card-content">
-                <h3>{tour.title}</h3>
-                <div className="tour-card-meta">
-                  <span><MapPin size={14} /> {tour.location}</span>
-                  <span><Clock size={14} /> {tour.duration}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="view-all-container">
+          <Link to="/tours" className="btn-modern-secondary-prominent">
+            EXPLORE FULL CATALOG
+          </Link>
+        </div>
+      </section>
+
+      {/* Premium Fleet Section */}
+      <section className="fleet-section">
+        <div className="section-header">
+          <span>Elite Fleet</span>
+          <h2>Premium Car Hire</h2>
+        </div>
+        <div className="fleet-grid-modern">
+          {vehicles.slice(0, 3).map((vehicle) => (
+            <div key={vehicle.id || vehicle._id} className="fleet-card-modern">
+              <div className="fleet-image-modern">
+                <img src={vehicle.image} alt={vehicle.name} />
+                <div className="fleet-price-badge">{formatPrice(vehicle.pricePerDay)}<span>/day</span></div>
+              </div>
+              <div className="fleet-info-modern">
+                <div className="fleet-type-tag">{vehicle.type}</div>
+                <h3>{vehicle.name}</h3>
+                <div className="fleet-specs-modern">
+                  <span><Users size={14} /> {vehicle.capacity} Seats</span>
+                  <span><Zap size={14} /> {vehicle.transmission || 'Auto/Manual'}</span>
                 </div>
-                <Link to={`/tours/${tour.slug || tour._id}`} className="tour-card-btn">
-                  View Details <ChevronRight size={16} />
+                <Link to="/car-hire" className="fleet-btn-modern">
+                  Reserve Vehicle <ArrowRight size={18} />
                 </Link>
               </div>
             </div>
           ))}
         </div>
         <div className="view-all-container">
-          <Link to="/tours" className="btn-modern-secondary-prominent">
-            View All Adventures <ArrowRight size={20} />
+          <Link to="/car-hire" className="btn-luxury-outline-small">
+            VIEW ENTIRE FLEET
           </Link>
         </div>
       </section>
@@ -438,7 +516,7 @@ const Home = () => {
           </div>
           <div className="gallery-item">
             <div className="image-frame">
-              <img src="https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg" alt="Amboseli" />
+              <img src="https://www.ngorongorocratertanzania.org/wp-content/uploads/2019/09/Amboseli.jpg" alt="Amboseli" />
             </div>
             <div className="gallery-caption">Amboseli Giants</div>
           </div>
@@ -484,22 +562,35 @@ const Home = () => {
 
       {/* Stats Section with Background */}
       <section className="stats-parallax">
+        <div className="stats-overlay"></div>
         <div className="stats-container">
           <div className="stat-card">
-            <h3>12k+</h3>
-            <p>Happy Travelers</p>
+            <div className="stat-icon"><Users size={32} /></div>
+            <div className="stat-info">
+              <h3>12k+</h3>
+              <p>Happy Travelers</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>50+</h3>
-            <p>Destinations</p>
+            <div className="stat-icon"><Globe size={32} /></div>
+            <div className="stat-info">
+              <h3>50+</h3>
+              <p>Destinations</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>250+</h3>
-            <p>Tours Completed</p>
+            <div className="stat-icon"><Trophy size={32} /></div>
+            <div className="stat-info">
+              <h3>250+</h3>
+              <p>Tours Completed</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>15+</h3>
-            <p>Years Experience</p>
+            <div className="stat-icon"><Calendar size={32} /></div>
+            <div className="stat-info">
+              <h3>15+</h3>
+              <p>Years Experience</p>
+            </div>
           </div>
         </div>
       </section>

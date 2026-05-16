@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import InquiryModal from '../components/InquiryModal';
-import '../styles/Adventures_New.css';
+import '../styles/Adventures.css';
 
 const Adventures = () => {
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
@@ -24,42 +24,42 @@ const Adventures = () => {
       description: "Conquer the highest peaks and witness breathtaking alpine views.",
       image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#e67e22"
+      color: "var(--primary)"
     },
     {
       title: "Wildlife Safaris",
       description: "Get up close with Africa's Big Five in their natural habitat.",
       image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#27ae60"
+      color: "var(--primary)"
     },
     {
       title: "Coastal Getaways",
       description: "Relax on pristine white sands and dive into turquoise waters.",
       image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#3498db"
+      color: "var(--primary)"
     },
     {
       title: "Cultural Immersions",
       description: "Experience the rich traditions and vibrant heritage of Kenya.",
       image: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#9b59b6"
+      color: "var(--primary)"
     },
     {
       title: "Adrenaline Sports",
       description: "From bungee jumping to white-water rafting, feel the thrill.",
       image: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#e74c3c"
+      color: "var(--primary)"
     },
     {
       title: "Photography Tours",
       description: "Capture the perfect shot with expert guides and stunning backdrops.",
       image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       link: "/tours",
-      color: "#f1c40f"
+      color: "var(--primary)"
     }
   ];
 
@@ -80,7 +80,7 @@ const Adventures = () => {
         </div>
         <div className="adv-hero-content">
           <span className="adv-tag">PUSH YOUR LIMITS</span>
-          <h1 className="adv-title">Epic <span className="text-gradient">Adventures</span></h1>
+          <h1 className="adv-title">Epic <span className="text-primary">Adventures</span></h1>
           <p className="adv-description">
             Life is either a daring adventure or nothing at all. 
             Choose your next thrill and create memories that last a lifetime.

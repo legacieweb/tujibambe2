@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import UserSidebar from '../components/user/UserSidebar';
-import UserHeader from '../components/user/UserHeader';
 import UserOverview from '../components/user/UserOverview';
+import UserTours from '../components/user/UserTours';
 import UserProfile from '../components/user/UserProfile';
 import UserSettings from '../components/user/UserSettings';
 import UserCarBookings from '../components/user/UserCarBookings';
 import UserEventPlanning from '../components/user/UserEventPlanning';
 import '../styles/UserDashboard.css';
+import '../styles/UserDashboardModern.css';
 
 const UserDashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -37,7 +39,7 @@ const UserDashboard = () => {
     const fetchBookings = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/bookings/my-bookings', {
+        const res = await axios.get('https://tujibambe2.onrender.com/api/bookings/my-bookings', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(res.data);
@@ -74,14 +76,21 @@ const UserDashboard = () => {
       />
 
       <main className="dashboard-main-content user-theme">
-        <UserHeader 
-          user={user} 
-          toggleSidebar={toggleSidebar} 
-          isSidebarOpen={isSidebarOpen} 
-        />
+        <div className="dashboard-welcome-section">
+          <div className="welcome-text">
+            <h1>Jambo, <span>{user?.name?.split(' ')[0] || 'Traveler'}</span>!</h1>
+            <p>Ready for your next adventure with Tujibambe?</p>
+          </div>
+          <div className="quick-actions">
+            <button className="mobile-toggle-btn" onClick={toggleSidebar}>
+              <Menu size={24} />
+            </button>
+          </div>
+        </div>
 
         <div className="dashboard-scrollable-content user-theme">
           {activeTab === 'dashboard' && <UserOverview bookings={bookings} />}
+          {activeTab === 'tour-bookings' && <UserTours bookings={bookings} />}
           {activeTab === 'car-bookings' && <UserCarBookings />}
           {activeTab === 'event-planning' && <UserEventPlanning />}
           {activeTab === 'profile' && <UserProfile user={user} bookings={bookings} />}

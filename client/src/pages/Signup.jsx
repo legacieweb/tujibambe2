@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { ArrowRight, AlertCircle, Sparkles, Award, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, User, Mail } from 'lucide-react';
 import '../styles/Auth.css';
 
 const Signup = () => {
@@ -30,73 +30,87 @@ const Signup = () => {
     <div className="auth-page">
       <div className="auth-visual-side">
         <img 
-          src="https://img.freepik.com/free-photo/backpacker-standing-sunrise-viewpoint-ja-bo-village-mae-hong-son-province-thailand_335224-1356.jpg?semt=ais_rp_50_assets&w=740&q=80" 
-          alt="Adventure Background" 
+          src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+          alt="African Landscape" 
           className="auth-bg-image"
         />
         <div className="auth-visual-overlay"></div>
         <div className="auth-visual-content">
-          <div className="featured-badge" style={{ marginBottom: '2rem' }}>
-            Elite Experience
+          <div className="featured-badge">
+            Join the Journey
           </div>
-          <h1>Discover <span>Kenya</span></h1>
-          <p>Unforgettable safaris, mountain treks, and beach escapes await you.</p>
+          <h1>Explore <span>Kenya</span></h1>
+          <p>Create an account to start planning your dream safari and join our community of adventurers.</p>
         </div>
       </div>
 
       <div className="auth-form-side">
-        <div className="auth-card fade-in">
+        <div className="auth-card">
           <div className="auth-header">
             <h2>Create Account</h2>
-            <p>Join our community of explorers</p>
+            <p>Your adventure starts here</p>
           </div>
 
           {error && (
             <div className="error-msg">
-              <AlertCircle size={18} />
+              <AlertCircle size={20} />
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Full Name</label>
-              <input 
-                type="text" 
-                value={formData.name} 
-                onChange={(e) => setFormData({...formData, name: e.target.value})} 
-                placeholder="Enter your name" 
-                required 
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email Address</label>
-              <input 
-                type="email" 
-                value={formData.email} 
-                onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                placeholder="name@example.com" 
-                required 
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Password</label>
+              <label htmlFor="name">Full Name</label>
               <div className="password-input-wrapper">
                 <input 
+                  id="name"
+                  type="text" 
+                  value={formData.name} 
+                  onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                  placeholder="e.g. Jane Doe" 
+                  required 
+                />
+                <div className="password-toggle" style={{ cursor: 'default', color: '#ccc' }}>
+                  <User size={18} />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <div className="password-input-wrapper">
+                <input 
+                  id="email"
+                  type="email" 
+                  value={formData.email} 
+                  onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                  placeholder="e.g. jane@example.com" 
+                  required 
+                />
+                <div className="password-toggle" style={{ cursor: 'default', color: '#ccc' }}>
+                  <Mail size={18} />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <div className="password-input-wrapper">
+                <input 
+                  id="password"
                   type={showPassword ? "text" : "password"} 
                   value={formData.password} 
                   onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                  placeholder="Minimum 8 characters" 
+                  placeholder="Min. 8 characters" 
                   required 
                 />
                 <button 
                   type="button"
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
@@ -105,13 +119,13 @@ const Signup = () => {
               {loading ? (
                 <span className="preloader"></span>
               ) : (
-                "Create account"
+                "Create Account"
               )}
             </button>
           </form>
 
           <p className="auth-footer">
-            Already have an account? <Link to="/login">Sign in</Link>
+            Already have an account? <Link to="/login">Sign in instead</Link>
           </p>
         </div>
       </div>
