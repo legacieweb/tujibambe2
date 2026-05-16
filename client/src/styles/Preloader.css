@@ -1,116 +1,137 @@
-.minimal-preloader {
+.modern-preloader {
   position: fixed;
   inset: 0;
   background: #000;
   z-index: 10000;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
 }
 
-/* Progress Frame */
-.progress-frame {
+.preloader-bg-accent {
   position: absolute;
-  inset: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, rgba(255, 77, 0, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
   pointer-events: none;
 }
 
-.frame-line {
-  position: absolute;
-  background: #ff4d00;
-  transition: all 0.1s linear;
-}
-
-.frame-line.top { top: 0; left: 0; height: 1px; }
-.frame-line.right { top: 0; right: 0; width: 1px; }
-.frame-line.bottom { bottom: 0; right: 0; height: 1px; }
-.frame-line.left { bottom: 0; left: 0; width: 1px; }
-
-/* Center Content */
-.center-content {
+.preloader-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
 }
 
-.logo-wrapper {
-  display: flex;
-  gap: 15px;
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-}
-
-.logo-part {
-  opacity: 0;
-  filter: blur(10px);
-  animation: logo-reveal 1.2s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-.logo-part.t {
-  transform: translateX(-40px);
-}
-
-.logo-part.b {
-  color: #ff4d00;
-  transform: translateX(40px);
-  animation-delay: 0.2s;
-}
-
-.status-wrap {
+.preloader-icon-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.main-icon {
+  color: #ff4d00;
+  z-index: 2;
+  filter: drop-shadow(0 0 15px rgba(255, 77, 0, 0.4));
+}
+
+.compass-spinner {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgba(255, 77, 0, 0.2);
+  border-radius: 50%;
+}
+
+.preloader-brand-v2 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.2em;
+  margin-bottom: 40px;
+}
+
+.preloader-brand-v2 span {
+  color: #ff4d00;
+}
+
+.modern-progress-box {
+  width: 280px;
+}
+
+.progress-track-v2 {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill-v2 {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4d00, #ff8700);
+  box-shadow: 0 0 15px rgba(255, 77, 0, 0.5);
+}
+
+.progress-metrics {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.percent-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.loading-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.preloader-footer {
+  position: absolute;
+  bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 15px;
-  opacity: 0;
-  animation: fade-in 0.8s ease-out 0.8s forwards;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5em;
 }
 
-.percentage {
-  font-size: 0.9rem;
-  font-weight: 300;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
-}
-
-.divider {
-  width: 30px;
+.footer-line {
+  width: 40px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 77, 0, 0.5);
 }
 
-.label {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* Animations */
-@keyframes logo-reveal {
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateX(0);
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .preloader-brand-v2 {
+    font-size: 1.8rem;
   }
-}
-
-@keyframes fade-in {
-  to {
-    opacity: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .logo-wrapper {
-    font-size: 2rem;
-    gap: 10px;
-  }
-  .progress-frame {
-    inset: 10px;
+  .modern-progress-box {
+    width: 220px;
   }
 }

@@ -99,6 +99,26 @@ const Navbar = () => {
             <Link to="/car-hire" onClick={() => setIsOpen(false)}>Car Hire</Link>
             <Link to="/event-planner" onClick={() => setIsOpen(false)}>Events</Link>
           </div>
+
+          <div className="sidebar-currency-section">
+            <span className="sidebar-label">Currency</span>
+            <div className="sidebar-currency-grid">
+              <button 
+                className={`sidebar-curr-item ${currency === 'USD' ? 'active' : ''}`}
+                onClick={() => setCurrency('USD')}
+              >
+                <span className="curr-code">USD</span>
+                <span className="curr-name">US Dollar</span>
+              </button>
+              <button 
+                className={`sidebar-curr-item ${currency === 'KES' ? 'active' : ''}`}
+                onClick={() => setCurrency('KES')}
+              >
+                <span className="curr-code">KES</span>
+                <span className="curr-name">Kenyan Shilling</span>
+              </button>
+            </div>
+          </div>
           
           <div className="sidebar-footer">
             {user ? (

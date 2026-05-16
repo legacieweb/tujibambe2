@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../../api/config';
-import { Car, MapPin, Calendar, Clock, ChevronRight, Fuel, Gauge, Shield, Users } from 'lucide-react';
+import { Car, MapPin, Calendar, Clock, ChevronRight, Fuel, Gauge, Shield, Users, Loader2 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
 const UserCarBookings = () => {
@@ -25,8 +25,17 @@ const UserCarBookings = () => {
 
   if (loading) {
     return (
-      <div className="loading-container" style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
-        <div className="preloader"></div>
+      <div className="loading-container" style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center', 
+        padding: '100px',
+        gap: '20px',
+        color: 'var(--user-text-muted)'
+      }}>
+        <Loader2 size={40} className="animate-spin" style={{ color: 'var(--user-accent)' }} />
+        <p style={{ fontSize: '0.9rem', fontWeight: '600', letterSpacing: '0.1em' }}>RETRIEVING FLEET...</p>
       </div>
     );
   }

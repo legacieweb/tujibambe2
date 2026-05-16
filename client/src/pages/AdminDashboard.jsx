@@ -13,7 +13,7 @@ import AdminSystem from '../components/admin/AdminSystem';
 import AdminVehicles from '../components/admin/AdminVehicles';
 import AdminCarBookings from '../components/admin/AdminCarBookings';
 import AdminEpicFunTimes from '../components/admin/AdminEpicFunTimes';
-import AdminEventPlanning from '../components/admin/AdminEventPlanning';
+import AdminEventPlanning from '../components/admin/AdminEventPlanning_New';
 import AdminInquiries from '../components/admin/AdminInquiries';
 import '../styles/Dashboard.css';
 
