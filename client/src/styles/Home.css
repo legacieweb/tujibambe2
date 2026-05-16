@@ -340,38 +340,44 @@
 
 .carousel-arrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  bottom: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
   color: #fff;
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 10;
-  transition: all 0.3s ease;
+  z-index: 15;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carousel-arrow:hover {
   background: var(--primary);
   border-color: var(--primary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(255, 77, 0, 0.3);
 }
 
-.carousel-arrow.prev { left: 30px; }
-.carousel-arrow.next { right: 30px; }
+.carousel-arrow.prev { 
+  left: 5%; 
+}
+
+.carousel-arrow.next { 
+  right: 5%; 
+}
 
 .carousel-indicators {
   position: absolute;
-  bottom: 40px;
+  bottom: 60px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 15px;
+  gap: 12px;
   z-index: 10;
 }
 
@@ -1286,10 +1292,18 @@
   .stat-icon { width: 60px; height: 60px; }
   .stat-icon svg { width: 24px; height: 24px; }
   
-  .carousel-arrow { width: 45px; height: 45px; }
-  .carousel-arrow.prev { left: 10px; }
-  .carousel-arrow.next { right: 10px; }
-  .carousel-arrow svg { width: 24px; height: 24px; }
+  .carousel-arrow { 
+    width: 48px; 
+    height: 48px; 
+    bottom: 25px; 
+  }
+  .carousel-arrow.prev { left: 15px; }
+  .carousel-arrow.next { right: 15px; }
+  .carousel-arrow svg { width: 20px; height: 20px; }
+
+  .carousel-indicators {
+    bottom: 40px;
+  }
 
   .tours-grid-home { grid-template-columns: 1fr; }
   .card-spotlight .tour-card-image { height: 250px; }

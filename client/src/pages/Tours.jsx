@@ -215,6 +215,22 @@ const Tours = () => {
             </div>
           ))}
 
+          {/* Navigation Arrows */}
+          <button 
+            className="carousel-arrow prev"
+            onClick={prevSlide}
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button 
+            className="carousel-arrow next"
+            onClick={nextSlide}
+            aria-label="Next slide"
+          >
+            <ChevronRight size={24} />
+          </button>
+
           <div className="carousel-indicators">
             {carouselSlides.map((_, index) => (
               <button

@@ -276,14 +276,14 @@ const Home = () => {
             onClick={prevSlide}
             aria-label="Previous slide"
           >
-            <ChevronLeft size={32} />
+            <ChevronLeft size={24} />
           </button>
           <button 
             className="carousel-arrow next"
             onClick={nextSlide}
             aria-label="Next slide"
           >
-            <ChevronRight size={32} />
+            <ChevronRight size={24} />
           </button>
 
           {/* Indicators */}
