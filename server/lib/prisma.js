@@ -3,11 +3,11 @@ const { PrismaPg } = require('@prisma/adapter-pg');
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy";
+const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({ 
   connectionString,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+  ssl: { rejectUnauthorized: false }
 });
 
 const adapter = new PrismaPg(pool);
