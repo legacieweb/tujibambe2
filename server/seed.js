@@ -148,8 +148,8 @@ const tours = [
         category: "Road Trip",
         maxGroupSize: 14,
         type: "timed",
-        eventDate: new Date("2026-05-16"),
-        bookingDeadline: new Date("2026-05-14"),
+        eventDate: new Date("2026-07-18"),
+        bookingDeadline: new Date("2026-07-16"),
         video: "https://imgur.com/FmejG7B",
         gallery: [
             "https://safarikenyaexplorer.com/wp-content/uploads/2024/01/lakenaivashaimg1-1-1024x512.jpg",
@@ -168,8 +168,8 @@ const tours = [
         category: "Nature Escape",
         maxGroupSize: 20,
         type: "timed",
-        eventDate: new Date("2026-05-17"),
-        bookingDeadline: new Date("2026-05-15"),
+        eventDate: new Date("2026-06-27"),
+        bookingDeadline: new Date("2026-06-25"),
         gallery: [
             "https://www.maasaimarakenyapark.com/wp-content/uploads/2022/06/Paradise-Lost-Nairobi-scaled-1-580x408-1.jpg",
             "https://www.tranquilkilimanjaro.com/wp-content/uploads/paradiselost-scaled.jpeg",
