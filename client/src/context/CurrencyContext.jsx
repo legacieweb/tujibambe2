@@ -1,37 +1,51 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const CurrencyContext = createContext();
 
-export const useCurrency = () => useContext(CurrencyContext);
+const KES_TO_USD_RATE = 0.0077;
 
 export const CurrencyProvider = ({ children }) => {
   const [currency, setCurrency] = useState(() => {
-    return localStorage.getItem('userCurrency') || 'USD';
+    const saved = localStorage.getItem('currency');
+    return saved || 'USD';
   });
-  const [exchangeRate] = useState(124);
+
+  const [exchangeRate, setExchangeRate] = useState(KES_TO_USD_RATE);
 
   useEffect(() => {
-    localStorage.setItem('userCurrency', currency);
+    localStorage.setItem('currency', currency);
   }, [currency]);
 
-  const formatPrice = (price) => {
-    if (currency === 'KES') {
-      const converted = price * exchangeRate;
-      return `KES ${new Intl.NumberFormat('en-KE').format(converted)}`;
+  const convertPrice = (price, fromCurrency = 'USD') => {
+    if (fromCurrency === 'KES') {
+      return price;
     }
-    return `$${new Intl.NumberFormat('en-US').format(price)}`;
+    return price;
   };
 
-  const value = {
-    currency,
-    setCurrency,
-    formatPrice,
-    exchangeRate
+  const formatPrice = (price, targetCurrency = null) => {
+    const target = targetCurrency || currency;
+    const converted = target === 'KES' ? price * (1 / KES_TO_USD_RATE) : price;
+    
+    if (target === 'KES') {
+      return `KSh ${Math.round(converted).toLocaleString()}`;
+    }
+    return `$${Math.round(converted).toLocaleString()}`;
   };
 
   return (
-    <CurrencyContext.Provider value={value}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, formatPrice, exchangeRate, convertPrice }}>
       {children}
     </CurrencyContext.Provider>
   );
 };
+
+export const useCurrency = () => {
+  const context = useContext(CurrencyContext);
+  if (!context) {
+    throw new Error('useCurrency must be used within a CurrencyProvider');
+  }
+  return context;
+};
+
+export default CurrencyContext;
