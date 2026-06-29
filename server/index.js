@@ -163,6 +163,58 @@ app.get('/db-test', async (req, res) => {
   }
 });
 
+// Car Bookings Routes
+app.post('/api/car-bookings', authenticate, async (req, res) => {
+  try {
+    const { vehicleId, startDate, endDate, totalPrice, currency, pickupLocation, dropoffLocation } = req.body;
+    const userId = req.user.id;
+
+    const carBooking = await prisma.carBooking.create({
+      data: {
+        userId,
+        vehicleId,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        totalPrice: parseFloat(totalPrice),
+        amountPaid: 0,
+        currency,
+        pickupLocation,
+        dropoffLocation,
+        status: 'pending'
+      }
+    });
+
+    res.status(201).json(carBooking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to create car booking' });
+  }
+});
+
+// Invite code route for group bookings
+app.get('/api/bookings/invite/:code', authenticate, async (req, res) => {
+  try {
+    const { code } = req.params;
+    const trip = await prisma.trip.findFirst({
+      where: { inviteCode: code },
+      include: {
+        vehicle: true,
+        bookings: true
+      }
+    });
+
+    if (!trip) {
+      return res.status(404).json({ message: 'Invalid invite code' });
+    }
+
+    const bookedSeats = trip.bookings.flatMap(b => b.selectedSeats || []);
+    res.json({ trip, bookedSeats });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch trip' });
+  }
+});
+
 // Bookings Routes
 app.post('/api/bookings', authenticate, async (req, res) => {
   try {
@@ -246,6 +298,11 @@ app.get('/api/bookings/my-bookings', authenticate, async (req, res) => {
       include: {
         tour: true,
         vehicle: true,
+        trip: {
+          include: {
+            vehicle: true
+          }
+        },
         payments: true
       },
       orderBy: { createdAt: 'desc' }
@@ -267,6 +324,11 @@ app.get('/api/bookings/all', authenticate, async (req, res) => {
         user: true,
         tour: true,
         vehicle: true,
+        trip: {
+          include: {
+            vehicle: true
+          }
+        },
         payments: true
       },
       orderBy: { createdAt: 'desc' }
@@ -393,6 +455,87 @@ app.delete('/api/inquiries/:id', authenticate, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to delete inquiry' });
+  }
+});
+
+// Admin Tours Routes
+app.post('/api/tours', authenticate, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { title, location, price, image, category, type, description } = req.body;
+    const tour = await prisma.tour.create({
+      data: { title, location, price: parseFloat(price), image, category, type, description }
+    });
+    res.status(201).json(tour);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to create tour' });
+  }
+});
+
+app.put('/api/tours/:id', authenticate, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { id } = req.params;
+    const { title, location, price, image, category, type, description } = req.body;
+    const tour = await prisma.tour.update({
+      where: { id },
+      data: { title, location, price: parseFloat(price), image, category, type, description }
+    });
+    res.json(tour);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update tour' });
+  }
+});
+
+app.delete('/api/tours/:id', authenticate, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { id } = req.params;
+    await prisma.tour.delete({ where: { id } });
+    res.json({ message: 'Tour deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to delete tour' });
+  }
+});
+
+app.put('/api/bookings/:id', authenticate, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { id } = req.params;
+    const { status } = req.body;
+    const booking = await prisma.booking.update({
+      where: { id },
+      data: { status }
+    });
+    res.json(booking);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update booking' });
+  }
+});
+
+app.delete('/api/bookings/:id', authenticate, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    const { id } = req.params;
+    await prisma.booking.delete({ where: { id } });
+    res.json({ message: 'Booking deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to delete booking' });
   }
 });
 

@@ -11,6 +11,8 @@ const vehicles = [
         image: "https://topcar.co.ke/wp-content/uploads/2017/07/2010-Toyota-Voxy.jpg",
         pricePerDay: 80,
         features: ["Spacious interior", "Air conditioning", "Fuel efficient", "Comfortable seats", "Music system"],
+        transmission: "Automatic",
+        fuel: "Petrol",
         gallery: [
             "https://topcar.co.ke/wp-content/uploads/2017/07/2010-Toyota-Voxy-Rear.jpg",
             "https://topcar.co.ke/wp-content/uploads/2017/07/11-2.jpg",
@@ -24,6 +26,8 @@ const vehicles = [
         image: "https://i.imgur.com/CtFXxLl.jpeg",
         pricePerDay: 100,
         features: ["Pop-up roof", "Air conditioning", "Charging ports", "music system"],
+        transmission: "Manual",
+        fuel: "Diesel",
         gallery: [
             "https://i.imgur.com/CtFXxLl.jpeg",
             "https://i.imgur.com/B5EUnkf.jpeg"
@@ -36,6 +40,8 @@ const vehicles = [
         image: "https://i.pinimg.com/1200x/41/7a/5f/417a5f0242d0170e6765173223005c2e.jpg",
         pricePerDay: 300,
         features: ["Reclining seats", "TV/Music system", "Luggage compartments"],
+        transmission: "Automatic",
+        fuel: "Diesel",
         gallery: [
             "https://i.pinimg.com/1200x/41/7a/5f/417a5f0242d0170e6765173223005c2e.jpg",
             "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -56,8 +62,8 @@ const tours = [
         category: "Hiking",
         maxGroupSize: 12,
         type: "timed",
-        eventDate: new Date("2024-06-15"),
-        bookingDeadline: new Date("2024-06-01"),
+        eventDate: "2024-06-15T00:00:00.000Z",
+        bookingDeadline: "2024-06-01T00:00:00.000Z",
         gallery: [
             "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -92,8 +98,8 @@ const tours = [
         category: "Beach",
         maxGroupSize: 25,
         type: "timed",
-        eventDate: new Date("2024-07-10"),
-        bookingDeadline: new Date("2024-07-01"),
+        eventDate: "2024-07-10T00:00:00.000Z",
+        bookingDeadline: "2024-07-01T00:00:00.000Z",
         gallery: [
             "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1538964173425-93884d739596?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -117,7 +123,7 @@ const tours = [
             "https://summerbreaksafaris.com/wp-content/uploads/2024/06/Amboseli-Tsavo-SaltLick-Safari.jpg"
         ]
     },
-    {
+{
         title: "Lake Victoria Expedition",
         slug: "lake-victoria-expedition",
         description: "The ultimate lakeside adventure! Journey from Nairobi to Kisumu for a 3-day epic experience. Enjoy free chicken, fish, and goat meat with unlimited drinks. Experience the serene beauty of Lake Victoria and the vibrant culture of Kisumu. This all-inclusive package covers transport, meals, and entertainment.",
@@ -129,8 +135,8 @@ const tours = [
         maxGroupSize: 30,
         type: "timed",
         isAllInclusive: true,
-        eventDate: new Date("2026-05-30"),
-        bookingDeadline: new Date("2026-05-20"),
+        eventDate: "2026-05-30T00:00:00.000Z",
+        bookingDeadline: "2026-05-20T00:00:00.000Z",
         gallery: [
             "https://journeysbydesign.com/wp-content/uploads/2016/12/Lake-Victoria-Dhow.jpg",
             "https://www.africanmeccasafaris.com/wp-content/uploads/pineapplebayresort5.jpg",
@@ -140,7 +146,7 @@ const tours = [
     {
         title: "TUJIBAMBE ROAD TRIP EXPERIENCE",
         slug: "tujibambe-road-trip-experience",
-        description: "Nairobi → Naivasha. Escape the city. Chase the views. Live the moment. Featuring: Hell’s Gate Adventure, Lake Naivasha Boat Ride, Scenic Stops & Content Moments. Packages: STANDARD (KES 4,500), PREMIUM (KES 5,800), EARLY BIRD (KES 4,000).",
+        description: "Nairobi → Naivasha. Escape the city. Chase the views. Live the moment. Featuring: Hell's Gate Adventure, Lake Naivasha Boat Ride, Scenic Stops & Content Moments. Packages: STANDARD (KES 4,500), PREMIUM (KES 5,800), EARLY BIRD (KES 4,000).",
         location: "Naivasha",
         price: 21,
         image: "https://images.daytrip.com/nairobi3AS.jpeg?w=2048&q=30",
@@ -148,8 +154,8 @@ const tours = [
         category: "Road Trip",
         maxGroupSize: 14,
         type: "timed",
-        eventDate: new Date("2026-07-18"),
-        bookingDeadline: new Date("2026-07-16"),
+        eventDate: "2026-07-18T00:00:00.000Z",
+        bookingDeadline: "2026-07-16T00:00:00.000Z",
         video: "https://imgur.com/FmejG7B",
         gallery: [
             "https://safarikenyaexplorer.com/wp-content/uploads/2024/01/lakenaivashaimg1-1-1024x512.jpg",
@@ -168,8 +174,8 @@ const tours = [
         category: "Nature Escape",
         maxGroupSize: 20,
         type: "timed",
-        eventDate: new Date("2026-06-27"),
-        bookingDeadline: new Date("2026-06-25"),
+        eventDate: "2026-06-27T00:00:00.000Z",
+        bookingDeadline: "2026-06-25T00:00:00.000Z",
         gallery: [
             "https://www.maasaimarakenyapark.com/wp-content/uploads/2022/06/Paradise-Lost-Nairobi-scaled-1-580x408-1.jpg",
             "https://www.tranquilkilimanjaro.com/wp-content/uploads/paradiselost-scaled.jpeg",
