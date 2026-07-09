@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
-import { useLoading } from '../context/LoadingContext';
 import API_BASE_URL from '../api/config';
 import { 
   Calendar, 
@@ -32,7 +31,6 @@ const TourDetails = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const { formatPrice } = useCurrency();
-  const { startLoading, stopLoading } = useLoading();
   const navigate = useNavigate();
   const [tour, setTour] = useState(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);

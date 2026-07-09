@@ -9,7 +9,7 @@ const Preloader = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsFound(true);
-    }, 2500);
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 

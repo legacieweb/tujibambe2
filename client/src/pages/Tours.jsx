@@ -17,13 +17,11 @@ import {
 } from 'lucide-react';
 import '../styles/Tours.css';
 import { useCurrency } from '../context/CurrencyContext';
-import { useLoading } from '../context/LoadingContext';
 import API_BASE_URL from '../api/config';
 
 const Tours = () => {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
-  const { startLoading, stopLoading } = useLoading();
   const [tours, setTours] = useState([]);
   const [filteredTours, setFilteredTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');

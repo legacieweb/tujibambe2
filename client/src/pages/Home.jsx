@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import SEO from '../components/SEO';
 import { 
   Compass, 
   Map, 
@@ -32,7 +31,6 @@ import {
 import '../styles/Home.css';
 import heroVideo from '../assets/184737-873923039_small.mp4';
 import { useCurrency } from '../context/CurrencyContext';
-import { useLoading } from '../context/LoadingContext';
 import API_BASE_URL from '../api/config';
 
 const Home = () => {
@@ -345,13 +343,6 @@ const Home = () => {
                 <div className="perk-info">
                   <h4>Free Food & Drinks</h4>
                   <p>Unlimited drinks plus chicken, fish, and goat meat.</p>
-                </div>
-              </div>
-              <div className="perk-card">
-                <div className="perk-icon"><Calendar /></div>
-                <div className="perk-info">
-                  <h4>May 30 - June 1</h4>
-                  <p>A perfectly planned 3-day getaway to the heart of Kisumu.</p>
                 </div>
               </div>
             </div>

@@ -3,7 +3,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
-import { useLoading } from '../context/LoadingContext';
 import API_BASE_URL from '../api/config';
 import { 
   Calendar, 
@@ -15,7 +14,7 @@ import {
   AlertCircle, 
   X, 
   ShieldCheck, 
-  Car, 
+  Car,
   ArrowLeft,
   CreditCard,
   Info,
@@ -34,7 +33,6 @@ const BookingPage = () => {
   const { id } = useParams();
   const { user, loading: authLoading } = useContext(AuthContext);
   const { formatPrice, currency: currentCurrency, exchangeRate } = useCurrency();
-  const { startLoading, stopLoading } = useLoading();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -67,7 +65,6 @@ const BookingPage = () => {
 
   useEffect(() => {
     const fetchTourAndVehicles = async () => {
-      startLoading();
       try {
         const queryParams = new URLSearchParams(location.search);
         const inviteCode = queryParams.get('invite');
@@ -97,8 +94,6 @@ const BookingPage = () => {
         }
       } catch (err) {
         console.error(err);
-      } finally {
-        stopLoading();
       }
     };
     fetchTourAndVehicles();

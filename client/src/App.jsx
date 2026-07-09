@@ -28,18 +28,14 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Cookies from './pages/Cookies';
 import Sitemap from './pages/Sitemap';
-import Preloader from './components/Preloader';
 import CurrencyPopup from './components/CurrencyPopup';
-import { useLoading } from './context/LoadingContext';
 
 const Layout = ({ children }) => {
-  const { isLoading } = useLoading();
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/admin') || location.pathname.startsWith('/dashboard');
 
   return (
     <div className="app">
-      {isLoading && <Preloader />}
       <CurrencyPopup />
       {!isDashboard && <Navbar />}
       {children}
